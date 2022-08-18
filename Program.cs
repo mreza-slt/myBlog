@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
+using MyBlog.Plugins.Middlewares;
+using MyBlog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddDbContext<BlogDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Add Services
+builder.Services.AddScoped<UserService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -43,17 +48,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// middlewares Custom Exceptions
+app.UseCustomExceptionHandler();
 
 app.Run();
