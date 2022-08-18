@@ -2,12 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
+using MyBlog.Plugins.Helpers;
 using MyBlog.Plugins.Middlewares;
 using MyBlog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager configuration = builder.Configuration;
+
+// trim all input string
+builder.Services.AddControllers()
+     .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.Converters.Add(new TrimStringConverter());
+     });
 
 // Add IdentitContext and Change the default setting result variable in identity
 builder.Services.AddIdentity<User, Role>()
