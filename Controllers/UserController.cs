@@ -18,21 +18,18 @@ namespace MyBlog.Controllers
 
         private UserService UserService { get; }
 
-        /// <summary>
-        /// ایجاد حساب کاربری
-        /// </summary>
-        /// <param name="userModel">اطلاعات کاربر</param>
-        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
-        /// <remarks>
-        /// برای ایجاد حساب کاربری جدید از این متد استفاده می شود
-        /// </remarks>
-        /// <response code="400 BadRequest">در صورتی که مقادیر ورودی نامعتبر باشد</response>
-        /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
         [HttpPost]
         [AllowAnonymous]
         public async Task<ResponseMessageViewModel> Register([FromBody] RegisterUserViewModel userModel)
         {
             return await this.UserService.Register(userModel);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ResponseMessageViewModel> Login([FromBody] LoginViewModel userModel)
+        {
+            return await this.UserService.Login(userModel);
         }
     }
 }

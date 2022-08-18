@@ -88,6 +88,70 @@ namespace MyBlog.Services
             return new ResponseMessageViewModel(null, "ثبت نام با موفقیت انجام شد");
         }
 
+        public async Task<ResponseMessageViewModel> Login(LoginViewModel userModel)
+        {
+            User? user = this.FindByUserNameOrEmailOrPhoneNumber(userModel.UserNameEmailPhone);
+
+            try
+            {
+                if (user == null)
+                {
+                    throw new HttpException($"هیچ کاربری با نام کاربری یا ایمیل یا شماره موبایل {userModel.UserNameEmailPhone} پیدا نشد", nameof(LoginViewModel.UserNameEmailPhone), HttpStatusCode.NotFound);
+                }
+
+                if (!await this.userManager.CheckPasswordAsync(user, userModel.Password))
+                {
+                    throw new HttpException("رمز عبور نادرست است", nameof(LoginViewModel.Password), HttpStatusCode.Unauthorized);
+                }
+
+                if (!user.LockoutEnabled || (user.LockoutEnabled && user.LockoutEnd.HasValue && user.LockoutEnd <= DateTime.Now))
+                {
+                    // save loginDatetime and last loginDateTime
+                    user.LastLoginDateTime = user.LoginDateTime;
+                    user.LoginDateTime = DateTime.Now;
+
+                    // reset accessFailedCount
+                    user.AccessFailedCount = 0;
+                    user.LockoutEnabled = false;
+
+                    this.DbContext.SaveChanges();
+                }
+                else
+                {
+                    throw new HttpException("پنج بار تلاش ورود ناموفق. پنج دقیقه دیگر مجددا امتحان کنید", "", HttpStatusCode.Forbidden);
+                }
+            }
+            catch (HttpException error)
+            {
+                if (user != null && error.HttpStatusCode == HttpStatusCode.Unauthorized)
+                {
+                    if (user.AccessFailedCount >= 4)
+                    {
+                        DateTime currentTime = DateTime.Now;
+                        user.LockoutEnd = currentTime.AddMinutes(5);
+                        user.AccessFailedCount = 0;
+                        user.LockoutEnabled = true;
+                    }
+                    else
+                    {
+                        user.AccessFailedCount += 1;
+                    }
+
+                    this.DbContext.SaveChanges();
+                }
+
+                throw error;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            await this.signInManager.SignInAsync(user, true);
+
+            return new ResponseMessageViewModel(null, "شما به حساب کاربری خود با موفقیت وارد شدید");
+        }
+
         public string? FindUsername(string? username)
         {
             return this.DbContext.Users.Where(x => !string.IsNullOrEmpty(x.UserName) && x.UserName == username)
@@ -104,6 +168,21 @@ namespace MyBlog.Services
         {
             return this.DbContext.Users.Where(x => x.PhoneNumber == phoneNumber)
                 .Select(x => x.PhoneNumber).FirstOrDefault();
+        }
+
+        public User? FindByUserNameOrEmailOrPhoneNumber(string userName)
+        {
+            if (userName.StartsWith("09"))
+            {
+                return this.DbContext.Users.FirstOrDefault(x => x.PhoneNumber == userName);
+            }
+
+            if (userName.Contains('@'))
+            {
+                return this.DbContext.Users.FirstOrDefault(x => x.Email == userName);
+            }
+
+            return this.DbContext.Users.FirstOrDefault(x => x.UserName == userName);
         }
     }
 }

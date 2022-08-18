@@ -46,5 +46,9 @@ namespace MyBlog.Models.DataModels
         public DateTime RegisterDateTime { get; set; }
 
         public DateTime LastUpdateDateTime { get; set; }
+
+        public DateTime? LoginDateTime { get; set; }
+
+        public DateTime? LastLoginDateTime { get; set; }
     }
 }
