@@ -79,7 +79,7 @@ namespace MyBlog.Controllers
         /// </summary>
         /// <returns>A <see cref="ResponseMessageViewModel"/>return Success Or Error Response</returns>
         /// <remarks>
-        /// برای خروج از نرم افزار حسابداری از این متد استفاده می شود
+        /// برای خروج از حساب کاربری از این متد استفاده می شود
         /// </remarks>
         [HttpGet]
         public async Task<ResponseMessageViewModel> Logout()

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
 using MyBlog.Plugins.Helpers;
@@ -66,14 +68,27 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.MaxAge = options.ExpireTimeSpan;
 });
 
-// swagger Settings
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+// swagger Settings----------
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "SoltaniWeblog Web API",
+        Description = "لیست وب سرویس های وبلاگ",
+    });
+
+    // related to Documentions  /// <summary> /// </summary> in Controllers and Propertys and Configurated in MyBlog.Xml
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
     // Show Auth on APIs
     options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
 });
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
