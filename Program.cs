@@ -5,6 +5,7 @@ using MyBlog.Models.DataModels;
 using MyBlog.Plugins.Helpers;
 using MyBlog.Plugins.Middlewares;
 using MyBlog.Services;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,9 +51,28 @@ builder.Services.AddScoped<UserService>();
 // Add services to the container.
 builder.Services.AddControllers();
 
+// set Custom setting Cookie
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "MyBlog";
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.HttpOnly = true;
+    options.SlidingExpiration = true;
+    options.LoginPath = "/api/User/UnAuthorizedLogin";
+    options.LogoutPath = "/api/User/Logout";
+    options.AccessDeniedPath = "/api/User/UnAuthorized";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.Cookie.MaxAge = options.ExpireTimeSpan;
+});
+
+// swagger Settings
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Show Auth on APIs
+    options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+});
 
 var app = builder.Build();
 
