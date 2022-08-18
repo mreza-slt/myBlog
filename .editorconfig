@@ -116,3 +116,9 @@ dotnet_diagnostic.SA1000.severity = none
 
 # SA1122: Use string.Empty for empty strings
 dotnet_diagnostic.SA1122.severity = none
+
+# CA1416: Validate platform compatibility
+dotnet_diagnostic.CA1416.severity = none
+
+# SA1009: Closing parenthesis should be spaced correctly
+dotnet_diagnostic.SA1009.severity = none

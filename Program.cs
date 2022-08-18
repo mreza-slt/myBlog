@@ -47,6 +47,7 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 
 // Add Services
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ImageService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -81,6 +82,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

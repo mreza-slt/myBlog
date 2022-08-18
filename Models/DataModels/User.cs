@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MyBlog.Models.ViewModels.User;
 
 namespace MyBlog.Models.DataModels
 {
@@ -29,6 +30,18 @@ namespace MyBlog.Models.DataModels
             this.TwoFactorEnabled = false;
             this.RegisterDateTime = DateTime.Now;
             this.LastUpdateDateTime = DateTime.Now;
+        }
+
+        internal static void Copy(ProfileUserViewModel userModel, User user)
+        {
+            user.Title = userModel.Title;
+            user.Name = userModel.Name;
+            user.Surname = userModel.Surname;
+            user.UserName = !string.IsNullOrEmpty(userModel.UserName) ? userModel.UserName : userModel.PhoneNumber;
+            user.Email = userModel.Email;
+            user.PhoneNumber = userModel.PhoneNumber;
+            user.Avatar = userModel.Avatar;
+            user.LastUpdateDateTime = DateTime.Now;
         }
 
         public Guid RowId { get; set; }

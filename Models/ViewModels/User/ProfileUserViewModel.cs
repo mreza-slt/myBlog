@@ -4,10 +4,7 @@ using MyBlog.CustomAttributes;
 
 namespace MyBlog.Models.ViewModels.User
 {
-    /// <summary>
-    /// اطلاعات کاربر
-    /// </summary>
-    public class RegisterUserViewModel
+    public class ProfileUserViewModel
     {
         [DefaultValue(null)]
         [MaxLength(50, ErrorMessage = "تعداد حروف عنوان نباید بیشتر از 50 کاراکتر باشد")]
@@ -40,17 +37,7 @@ namespace MyBlog.Models.ViewModels.User
         [Required(ErrorMessage = "شماره موبایل را وارد کنید")]
         public string PhoneNumber { get; set; } = null!;
 
-        [DefaultValue("Password")]
-        [DataType(DataType.Password)]
-        [MaxLength(100, ErrorMessage = "رمز عبور شما نباید بیشتر از 100 کاراکتر باشد")]
-        [MinLength(6, ErrorMessage = "رمز عبور شما نباید کمتر از 6 کاراکتر باشد")]
-        [Required(ErrorMessage = "رمز عبور را وارد کنید")]
-        public string Password { get; set; } = null!;
-
-        [DefaultValue("Password")]
-        [Compare("Password", ErrorMessage = "تکرار رمز عبور باید با رمز اصلی یکی باشد")]
-        [DataType(DataType.Password)]
-        [Required(ErrorMessage = "تکرار رمز عبور را وارد کنید")]
-        public string PasswordConfirm { get; set; } = null!;
+        [DefaultValue("")]
+        public string? Avatar { get; set; }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.Models.ViewModels;
 using MyBlog.Models.ViewModels.User;
 using MyBlog.Plugins.Exceptions;
 using MyBlog.Services;
-using System.Net;
 
 namespace MyBlog.Controllers
 {
@@ -20,13 +21,17 @@ namespace MyBlog.Controllers
 
         private UserService UserService { get; }
 
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ResponseMessageViewModel> Register([FromBody] RegisterUserViewModel userModel)
-        {
-            return await this.UserService.Register(userModel);
-        }
-
+        /// <summary>
+        /// ورود به حساب کاربری
+        /// </summary>
+        /// <param name="userModel">اطلاعات ورود کاربر</param>
+        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
+        /// <remarks>
+        /// برای ورود به حساب کاربری از این متد استفاده می شود
+        /// </remarks>
+        /// <response code="401 Unauthorized">در صورتی که رمز عبور اشتباه وارد شود</response>
+        /// <response code="403 Forbidden">در صورتی که امکان ورود به سیستم در این بازه زمانی وجود نداشته باشد</response>
+        /// <response code="404 NotFound">در صورتی که هیچ کاربری با نام کاربری یا ایمیل یا شماره تلفن پیدا نشود</response>
         [HttpPost]
         [AllowAnonymous]
         public async Task<ResponseMessageViewModel> Login([FromBody] LoginViewModel userModel)
@@ -34,6 +39,48 @@ namespace MyBlog.Controllers
             return await this.UserService.Login(userModel);
         }
 
+        /// <summary>
+        /// ایجاد حساب کاربری
+        /// </summary>
+        /// <param name="userModel">اطلاعات کاربر</param>
+        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
+        /// <remarks>
+        /// برای ایجاد حساب کاربری جدید از این متد استفاده می شود
+        /// </remarks>
+        /// <response code="400 BadRequest">در صورتی که مقادیر ورودی نامعتبر باشد</response>
+        /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ResponseMessageViewModel> Register([FromBody] RegisterUserViewModel userModel)
+        {
+            return await this.UserService.Register(userModel);
+        }
+
+        /// <summary>
+        /// ویرایش حساب کاربری
+        /// </summary>
+        /// <param name="userModel">اطلاعات کاربر</param>
+        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
+        /// <remarks>
+        /// برای ویرایش اطلاعات حساب کاربری از این متد استفاده می شود
+        /// </remarks>
+        /// <response code="400 BadRequest">در صورتی که مقادیر ورودی نامعتبر باشد</response>
+        /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
+        [HttpPut]
+        public async Task<ResponseMessageViewModel> Profile([FromBody] ProfileUserViewModel userModel)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return await this.UserService.Profile(Convert.ToInt64(userId), userModel);
+        }
+
+        /// <summary>
+        /// خروج از حساب کاربری
+        /// </summary>
+        /// <returns>A <see cref="ResponseMessageViewModel"/>return Success Or Error Response</returns>
+        /// <remarks>
+        /// برای خروج از نرم افزار حسابداری از این متد استفاده می شود
+        /// </remarks>
         [HttpGet]
         public async Task<ResponseMessageViewModel> Logout()
         {

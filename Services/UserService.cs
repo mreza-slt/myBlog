@@ -13,14 +13,18 @@ namespace MyBlog.Services
         public UserService(
             BlogDbContext dbContext,
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            ImageService imageService)
         {
             this.DbContext = dbContext;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.ImageService = imageService;
         }
 
         private BlogDbContext DbContext { get; }
+
+        private ImageService ImageService { get; }
 
         private readonly UserManager<User> userManager;
 
@@ -86,6 +90,77 @@ namespace MyBlog.Services
             await transaction.CommitAsync();
 
             return new ResponseMessageViewModel(null, "ثبت نام با موفقیت انجام شد");
+        }
+
+        public async Task<ResponseMessageViewModel> Profile(long userId, ProfileUserViewModel userModel)
+        {
+            User user = this.FindUser(userId)!;
+
+            Dictionary<string, string> errors = new();
+
+            if (!string.IsNullOrEmpty(userModel.UserName) || !string.IsNullOrEmpty(userModel.Email) || !string.IsNullOrEmpty(userModel.PhoneNumber))
+            {
+                string? userName = this.FindUsername(userModel.UserName);
+                if (!string.IsNullOrEmpty(userName) && userName != user.UserName)
+                {
+                    errors.Add(nameof(ProfileUserViewModel.UserName), $"نام کاربری {userName} قبلا برای یک کاربر ثبت شده است");
+                }
+
+                string? email = this.FindEmail(userModel.Email);
+                if (!string.IsNullOrEmpty(email) && email != user.Email)
+                {
+                    errors.Add(nameof(ProfileUserViewModel.Email), $"ایمیل {email} قبلا برای یک کاربر ثبت شده است");
+                }
+
+                string? phoneNumber = this.FindPhoneNumber(userModel.PhoneNumber);
+                if (phoneNumber != null && phoneNumber != user.PhoneNumber)
+                {
+                    errors.Add(nameof(ProfileUserViewModel.PhoneNumber), $"شماره موبایل {phoneNumber} قبلا برای یک کاربر ثبت شده است");
+                }
+
+                if (errors.Count > 0)
+                {
+                    throw new HttpException(errors, HttpStatusCode.Conflict);
+                }
+            }
+            else
+            {
+                throw new HttpException("باید حداقل یکی از فیلدهای نام کاربری یا ایمیل یا شماره موبایل را وارد کنید", $"{nameof(ProfileUserViewModel.UserName)},{nameof(ProfileUserViewModel.Email)},{nameof(ProfileUserViewModel.PhoneNumber)}", HttpStatusCode.BadRequest);
+            }
+
+            // Check format and fix size Image
+            try
+            {
+                userModel.Avatar = this.ImageService.FixImageSize(userModel.Avatar, 300);
+            }
+            catch (ArgumentException)
+            {
+                throw new HttpException("فرمت عکس صحیح نیست", nameof(ProfileUserViewModel.Avatar), HttpStatusCode.BadRequest);
+            }
+            catch (FormatException)
+            {
+                throw new HttpException("فرمت عکس صحیح نیست", nameof(ProfileUserViewModel.Avatar), HttpStatusCode.BadRequest);
+            }
+
+            // Update user with Internal in model
+            User.Copy(userModel, user);
+
+            IdentityResult result = await this.userManager.UpdateAsync(user);
+            foreach (var error in result.Errors)
+            {
+                if (error.Code == "InvalidUserName")
+                {
+                    throw new HttpException("نام کاربری را فقط با حروف و اعداد انگلیسی تکمیل کنید و از حروف و اعداد فارسی و علامت های نگارشی استفاده نکنید", nameof(ProfileUserViewModel.UserName), HttpStatusCode.BadRequest);
+                }
+                else if (error.Code == "DuplicateUserName")
+                {
+                    throw new HttpException($"شماره موبایل {user.PhoneNumber} که وارد کرده اید قبلا به عنوان نام کاربری یک کاربر ثبت شده است، و به همین دلیل باید مقدار نام کاربری را وارد کنید", nameof(RegisterUserViewModel.UserName), HttpStatusCode.BadRequest);
+                }
+
+                throw new Exception();
+            }
+
+            return new ResponseMessageViewModel(null, "اطلاعات با موفقیت ویرایش شد");
         }
 
         public async Task<ResponseMessageViewModel> Login(LoginViewModel userModel)
@@ -157,6 +232,12 @@ namespace MyBlog.Services
             await this.signInManager.SignOutAsync();
 
             return new ResponseMessageViewModel(null, "شما از حساب کاربری خود خارج شدید");
+        }
+
+        // datebase Methods
+        public User? FindUser(long id)
+        {
+            return this.DbContext.Users.FirstOrDefault(x => x.Id == id);
         }
 
         public string? FindUsername(string? username)
