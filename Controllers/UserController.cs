@@ -31,5 +31,11 @@ namespace MyBlog.Controllers
         {
             return await this.UserService.Login(userModel);
         }
+
+        [HttpGet]
+        public async Task<ResponseMessageViewModel> Logout()
+        {
+            return await this.UserService.Logout();
+        }
     }
 }

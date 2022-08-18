@@ -152,6 +152,13 @@ namespace MyBlog.Services
             return new ResponseMessageViewModel(null, "شما به حساب کاربری خود با موفقیت وارد شدید");
         }
 
+        public async Task<ResponseMessageViewModel> Logout()
+        {
+            await this.signInManager.SignOutAsync();
+
+            return new ResponseMessageViewModel(null, "شما از حساب کاربری خود خارج شدید");
+        }
+
         public string? FindUsername(string? username)
         {
             return this.DbContext.Users.Where(x => !string.IsNullOrEmpty(x.UserName) && x.UserName == username)
