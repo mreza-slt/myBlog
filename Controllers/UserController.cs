@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -101,6 +102,23 @@ namespace MyBlog.Controllers
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return await this.UserService.SendEmailConfirmCode(Convert.ToInt64(userId));
+        }
+
+        /// <summary>
+        /// تایید ایمیل کاربر
+        /// </summary>
+        /// <remarks>
+        /// برای چک کردن کد تایید ارسال شده به ایمیل کاربر و تایید ایمیل کاربر از این متد استفاده می شود
+        /// </remarks>
+        /// <param name="confirmCode">دریافت کد تایید ارسال شده به ایمیل کاربر</param>
+        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success or Error Response</returns>
+        /// <response code="400 BadRequest">در صورتی که مقدار وارد شده نامعتبر باشد</response>
+        [HttpGet]
+        public async Task<ResponseMessageViewModel> EmailConfirm([Required(ErrorMessage = "کد تایید ارسال شده به ایمیل را وارد کنید")] int confirmCode)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return await this.UserService.EmailConfirm(Convert.ToInt64(userId), confirmCode);
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

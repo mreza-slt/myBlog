@@ -275,6 +275,26 @@ namespace MyBlog.Services
             return new ResponseMessageViewModel(null, "کد تایید به ایمیل ارسال شد");
         }
 
+        public async Task<ResponseMessageViewModel> EmailConfirm(long userId, int recivedCode)
+        {
+            ConfirmCode? confirmCode = this.ConfirmCodeService.FindConfirmCode(userId, recivedCode, CodeType.EmailConfirm);
+
+            if (confirmCode != null && confirmCode.ExpireDate > DateTime.Now)
+            {
+                User? updateUser = this.FindUser(userId)!;
+
+                updateUser.EmailConfirmed = true;
+
+                await this.DbContext.SaveChangesAsync();
+
+                return new ResponseMessageViewModel(null, "ایمیل شما تایید شد");
+            }
+            else
+            {
+                throw new HttpException("کد وارد شده نامعتبر یا اعتبار کد به پایان رسیده است. لطفا دوباره کد را ارسال کنید", "", HttpStatusCode.BadRequest);
+            }
+        }
+
         // datebase Methods
         public User? FindUser(long id)
         {
