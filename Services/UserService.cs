@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
+using MyBlog.Models.Enums;
 using MyBlog.Models.ViewModels;
 using MyBlog.Models.ViewModels.User;
 using MyBlog.Plugins.Exceptions;
@@ -14,17 +15,25 @@ namespace MyBlog.Services
             BlogDbContext dbContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ImageService imageService)
+            ImageService imageService,
+            EmailService emailService,
+            ConfirmCodeService confirmCodeService)
         {
             this.DbContext = dbContext;
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.ImageService = imageService;
+            this.EmailService = emailService;
+            this.ConfirmCodeService = confirmCodeService;
         }
 
         private BlogDbContext DbContext { get; }
 
         private ImageService ImageService { get; }
+
+        private EmailService EmailService { get; }
+
+        private ConfirmCodeService ConfirmCodeService { get; }
 
         private readonly UserManager<User> userManager;
 
@@ -232,6 +241,38 @@ namespace MyBlog.Services
             await this.signInManager.SignOutAsync();
 
             return new ResponseMessageViewModel(null, "شما از حساب کاربری خود خارج شدید");
+        }
+
+        public async Task<ResponseMessageViewModel> SendEmailConfirmCode(long userId)
+        {
+            DateTime? createDate = this.ConfirmCodeService.FindLastConfirmCodeCreateDate(userId, CodeType.EmailConfirm);
+            if (createDate != null && DateTime.Now < createDate.Value.AddMinutes(2))
+            {
+                throw new HttpException("لطفا بعد از دو دقیقه از دریافت کد قبلی مجددا تلاش کنید", "", HttpStatusCode.Forbidden);
+            }
+
+            User user = this.FindUser(userId)!;
+
+            Random rd = new();
+            int randomCode = rd.Next(100000, 999999);
+
+            using var transaction = await this.DbContext.Database.BeginTransactionAsync();
+
+            ConfirmCode newConfirmCode = new(userId, randomCode, CodeType.EmailConfirm, DateTime.Now, DateTime.Now.AddHours(1));
+
+            await this.DbContext.AddAsync(newConfirmCode);
+
+            await this.DbContext.SaveChangesAsync();
+
+            // For text and email subject
+            string subject = "کد تایید ایمیل وبلاگ";
+            string body = $"کد تایید : {randomCode}";
+
+            await this.EmailService.SendEmail(user.Email, subject, body);
+
+            await transaction.CommitAsync();
+
+            return new ResponseMessageViewModel(null, "کد تایید به ایمیل ارسال شد");
         }
 
         // datebase Methods

@@ -15,6 +15,8 @@ namespace MyBlog.Data
         {
         }
 
+        public virtual DbSet<ConfirmCode> ConfirmCodes { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
@@ -30,6 +32,8 @@ namespace MyBlog.Data
             modelBuilder.Entity<Role>(ModelBuilders.RoleBuilder.Build);
             modelBuilder.Entity<RoleClaim>(ModelBuilders.RoleClaimBuilder.Build);
             modelBuilder.Entity<UserToken>(ModelBuilders.UserTokenBuilder.Build);
+
+            modelBuilder.Entity<ConfirmCode>(ModelBuilders.ConfirmCodeBuilder.Build);
         }
     }
 }

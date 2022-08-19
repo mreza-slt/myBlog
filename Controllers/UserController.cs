@@ -87,6 +87,22 @@ namespace MyBlog.Controllers
             return await this.UserService.Logout();
         }
 
+        /// <summary>
+        ///  ارسال کد تایید به ایمیل
+        /// </summary>
+        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
+        /// <remarks>
+        /// برای ارسال کد تایید به ایمیل از این متد استفاده می شود
+        /// </remarks>
+        /// <response code="403 Forbidden">در صورتی که امکان ارسال کد تایید در این بازه زمانی وجود نداشته باشد</response>
+        [HttpGet]
+        public async Task<ResponseMessageViewModel> SendEmailConfirmCode()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return await this.UserService.SendEmailConfirmCode(Convert.ToInt64(userId));
+        }
+
         [ApiExplorerSettings(IgnoreApi = true)]
         [AllowAnonymous]
         [HttpGet]

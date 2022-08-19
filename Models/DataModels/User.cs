@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyBlog.Models.ViewModels.User;
+using MyBlog.Models.DataModels;
 
 namespace MyBlog.Models.DataModels
 {
     public class User : IdentityUser<long>
     {
+        public User()
+        {
+            this.ConfirmCodes = new HashSet<ConfirmCode>();
+        }
+
         public User(
             string? title,
             string name,
@@ -13,6 +19,7 @@ namespace MyBlog.Models.DataModels
             string? email,
             string phoneNumber,
             string? passwordHash)
+            : this()
         {
             // Inputs user
             this.Title = title;
@@ -63,5 +70,7 @@ namespace MyBlog.Models.DataModels
         public DateTime? LoginDateTime { get; set; }
 
         public DateTime? LastLoginDateTime { get; set; }
+
+        public ICollection<ConfirmCode> ConfirmCodes { get; set; }
     }
 }

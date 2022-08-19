@@ -50,6 +50,8 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 // Add Services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<ConfirmCodeService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
