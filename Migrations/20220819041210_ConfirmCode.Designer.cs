@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBlog.Data;
 
@@ -11,9 +12,10 @@ using MyBlog.Data;
 namespace MyBlog.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    partial class BlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220819041210_ConfirmCode")]
+    partial class ConfirmCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,54 +23,6 @@ namespace MyBlog.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("MyBlog.Models.DataModels.Article", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<string>("Avatar")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfVisits")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("RegisterDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newsequentialid()");
-
-                    b.Property<long>("SubjectId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex(new[] { "RowId" }, "IX_Article_RowId");
-
-                    b.ToTable("Article", (string)null);
-                });
 
             modelBuilder.Entity("MyBlog.Models.DataModels.ConfirmCode", b =>
                 {
@@ -180,45 +134,6 @@ namespace MyBlog.Migrations
                     b.HasIndex(new[] { "RowId" }, "IX_UserRoleClaim_RowId");
 
                     b.ToTable("UserRoleClaim", (string)null);
-                });
-
-            modelBuilder.Entity("MyBlog.Models.DataModels.Subject", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FullCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("ParentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newsequentialid()");
-
-                    b.Property<int>("SubjectType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("RowId");
-
-                    b.ToTable("Subject", (string)null);
                 });
 
             modelBuilder.Entity("MyBlog.Models.DataModels.User", b =>
@@ -437,25 +352,6 @@ namespace MyBlog.Migrations
                     b.ToTable("UserToken", (string)null);
                 });
 
-            modelBuilder.Entity("MyBlog.Models.DataModels.Article", b =>
-                {
-                    b.HasOne("MyBlog.Models.DataModels.Subject", "Subject")
-                        .WithMany("Articles")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("MyBlog.Models.DataModels.User", "User")
-                        .WithMany("Articles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MyBlog.Models.DataModels.ConfirmCode", b =>
                 {
                     b.HasOne("MyBlog.Models.DataModels.User", "User")
@@ -474,16 +370,6 @@ namespace MyBlog.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("MyBlog.Models.DataModels.Subject", b =>
-                {
-                    b.HasOne("MyBlog.Models.DataModels.Subject", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("MyBlog.Models.DataModels.UserClaim", b =>
@@ -528,17 +414,8 @@ namespace MyBlog.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyBlog.Models.DataModels.Subject", b =>
-                {
-                    b.Navigation("Articles");
-
-                    b.Navigation("Children");
-                });
-
             modelBuilder.Entity("MyBlog.Models.DataModels.User", b =>
                 {
-                    b.Navigation("Articles");
-
                     b.Navigation("ConfirmCodes");
                 });
 #pragma warning restore 612, 618

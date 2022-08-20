@@ -6,5 +6,10 @@
         {
             return !string.IsNullOrEmpty(email) && email.Contains('@');
         }
+
+        public static string ReplaceWithValueIfIsNull(this string text, string value)
+        {
+            return string.IsNullOrEmpty(text) ? value : text;
+        }
     }
 }

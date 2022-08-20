@@ -1,9 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MyBlog.Models.ViewModels.User;
 
 namespace MyBlog.Models.DataModels
 {
     public class User : IdentityUser<long>
     {
+        public User()
+        {
+            this.ConfirmCodes = new HashSet<ConfirmCode>();
+            this.Articles = new HashSet<Article>();
+        }
+
         public User(
             string? title,
             string name,
@@ -12,6 +19,7 @@ namespace MyBlog.Models.DataModels
             string? email,
             string phoneNumber,
             string? passwordHash)
+            : this()
         {
             // Inputs user
             this.Title = title;
@@ -31,6 +39,18 @@ namespace MyBlog.Models.DataModels
             this.LastUpdateDateTime = DateTime.Now;
         }
 
+        internal static void Copy(ProfileUserViewModel userModel, User user)
+        {
+            user.Title = userModel.Title;
+            user.Name = userModel.Name;
+            user.Surname = userModel.Surname;
+            user.UserName = !string.IsNullOrEmpty(userModel.UserName) ? userModel.UserName : userModel.PhoneNumber;
+            user.Email = userModel.Email;
+            user.PhoneNumber = userModel.PhoneNumber;
+            user.Avatar = userModel.Avatar;
+            user.LastUpdateDateTime = DateTime.Now;
+        }
+
         public Guid RowId { get; set; }
 
         public string? Title { get; set; }
@@ -46,5 +66,13 @@ namespace MyBlog.Models.DataModels
         public DateTime RegisterDateTime { get; set; }
 
         public DateTime LastUpdateDateTime { get; set; }
+
+        public DateTime? LoginDateTime { get; set; }
+
+        public DateTime? LastLoginDateTime { get; set; }
+
+        public ICollection<ConfirmCode> ConfirmCodes { get; set; }
+
+        public ICollection<Article> Articles { get; set; }
     }
 }

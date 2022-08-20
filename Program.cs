@@ -1,11 +1,24 @@
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
+using MyBlog.Plugins.Helpers;
+using MyBlog.Plugins.Middlewares;
+using MyBlog.Services;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager configuration = builder.Configuration;
+
+// trim all input string
+builder.Services.AddControllers()
+     .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.Converters.Add(new TrimStringConverter());
+     });
 
 // Add IdentitContext and Change the default setting result variable in identity
 builder.Services.AddIdentity<User, Role>()
@@ -34,8 +47,48 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddDbContext<BlogDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Add Services
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<ConfirmCodeService>();
+builder.Services.AddScoped<SubjectService>();
+builder.Services.AddScoped<ArticleService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
+
+// set Custom setting Cookie
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "MyBlog";
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.HttpOnly = true;
+    options.SlidingExpiration = true;
+    options.LoginPath = "/api/User/UnAuthorizedLogin";
+    options.LogoutPath = "/api/User/Logout";
+    options.AccessDeniedPath = "/api/User/UnAuthorized";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.Cookie.MaxAge = options.ExpireTimeSpan;
+});
+
+// swagger Settings----------
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "SoltaniWeblog Web API",
+        Description = "لیست وب سرویس های وبلاگ",
+    });
+
+    // related to Documentions  /// <summary> /// </summary> in Controllers and Propertys and Configurated in MyBlog.Xml
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+    // Show Auth on APIs
+    options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -43,17 +96,17 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// middlewares Custom Exceptions
+app.UseCustomExceptionHandler();
 
 app.Run();

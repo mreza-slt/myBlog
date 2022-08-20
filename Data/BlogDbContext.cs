@@ -15,6 +15,12 @@ namespace MyBlog.Data
         {
         }
 
+        public virtual DbSet<ConfirmCode> ConfirmCodes { get; set; } = null!;
+
+        public virtual DbSet<Article> Articles { get; set; } = null!;
+
+        public virtual DbSet<Subject> Subjects { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
@@ -30,6 +36,10 @@ namespace MyBlog.Data
             modelBuilder.Entity<Role>(ModelBuilders.RoleBuilder.Build);
             modelBuilder.Entity<RoleClaim>(ModelBuilders.RoleClaimBuilder.Build);
             modelBuilder.Entity<UserToken>(ModelBuilders.UserTokenBuilder.Build);
+
+            modelBuilder.Entity<ConfirmCode>(ModelBuilders.ConfirmCodeBuilder.Build);
+            modelBuilder.Entity<Article>(ModelBuilders.ArticleBuilder.Build);
+            modelBuilder.Entity<Subject>(ModelBuilders.SubjectBuilder.Build);
         }
     }
 }

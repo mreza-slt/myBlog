@@ -15,11 +15,7 @@ namespace MyBlog.Data.ModelBuilders
                 .HasMaxLength(552)
                 .HasComputedColumnSql("(ltrim(rtrim((((isnull([Title],'')+' ')+[Name])+' ')+isnull([Surname],''))))", true);
 
-            entity.Property(e => e.LastUpdateDateTime).HasColumnType("datetime");
-
             entity.Property(e => e.Name).HasMaxLength(250);
-
-            entity.Property(e => e.PhoneNumber).IsRequired();
 
             entity.Property(e => e.PhoneNumber).HasColumnType("char(11)");
 
