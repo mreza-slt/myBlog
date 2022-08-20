@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyBlog.Models.ViewModels.User;
-using MyBlog.Models.DataModels;
 
 namespace MyBlog.Models.DataModels
 {
@@ -9,6 +8,7 @@ namespace MyBlog.Models.DataModels
         public User()
         {
             this.ConfirmCodes = new HashSet<ConfirmCode>();
+            this.Articles = new HashSet<Article>();
         }
 
         public User(
@@ -72,5 +72,7 @@ namespace MyBlog.Models.DataModels
         public DateTime? LastLoginDateTime { get; set; }
 
         public ICollection<ConfirmCode> ConfirmCodes { get; set; }
+
+        public ICollection<Article> Articles { get; set; }
     }
 }

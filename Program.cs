@@ -52,6 +52,8 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ConfirmCodeService>();
+builder.Services.AddScoped<SubjectService>();
+builder.Services.AddScoped<ArticleService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

@@ -18,8 +18,12 @@ namespace MyBlog.CustomAttributes
         private string GetErrorMessage() =>
             this.ErrMessage;
 
+#pragma warning disable SA1202 // Elements should be ordered by access
         protected override ValidationResult? IsValid(
+#pragma warning restore SA1202 // Elements should be ordered by access
+#pragma warning disable SA1114 // Parameter list should follow declaration
             object? value, ValidationContext validationContext)
+#pragma warning restore SA1114 // Parameter list should follow declaration
         {
             var emailValue = (string)value!;
 
