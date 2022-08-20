@@ -88,7 +88,7 @@ namespace MyBlog.Controllers
         /// برای حذف دسته بندی یا موضوع از این متد استفاده می شود
         /// </remarks>
         /// <response code="404 NotFound">در صورتی که هیچ موضوع یا دسته بندی با شناسه وارد شده پیدا نشود</response>
-        [HttpPut("{id}")]
+        [HttpDelete("{id}")]
         public async Task<ResponseMessageViewModel> Delete(long id)
         {
             return await this.SubjectService.Delete(id);
