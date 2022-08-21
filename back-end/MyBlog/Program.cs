@@ -9,7 +9,23 @@ using MyBlog.Plugins.Middlewares;
 using MyBlog.Services;
 using Swashbuckle.AspNetCore.Filters;
 
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: myAllowSpecificOrigins,
+        policy =>
+                      {
+                          policy.WithOrigins(
+                              "http://localhost:3006",
+                              "http://www.contoso.com")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
 
 ConfigurationManager configuration = builder.Configuration;
 
@@ -62,11 +78,12 @@ builder.Services.AddControllers();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "MyBlog";
+    options.Cookie.Path = "/";
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.Cookie.HttpOnly = true;
     options.SlidingExpiration = true;
-    options.LoginPath = "/api/User/UnAuthorizedLogin";
-    options.LogoutPath = "/api/User/Logout";
+    options.LoginPath = "/User/UnAuthorizedLogin";
+    options.LogoutPath = "/User/Logout";
     options.AccessDeniedPath = "/api/User/UnAuthorized";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.Cookie.MaxAge = options.ExpireTimeSpan;
@@ -105,6 +122,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors(myAllowSpecificOrigins);
 
 // middlewares Custom Exceptions
 app.UseCustomExceptionHandler();
