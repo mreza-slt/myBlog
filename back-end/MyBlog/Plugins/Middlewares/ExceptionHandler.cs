@@ -23,23 +23,24 @@ namespace MyBlog.Plugins.Middlewares
                     {
                         errors = ex.Messages;
                     }
-#if DEBUG
-                    errors.ExceptionMessage = ex.Message;
-                    errors.StackTrace = ex.StackTrace;
-                    errors.Source = ex.Source;
-#endif
+
+                    // #if DEBUG
+                    //                    errors.ExceptionMessage = ex.Message;
+                    //                    errors.StackTrace = ex.StackTrace;
+                    //                    errors.Source = ex.Source;
+                    // #endif
                     var errorResponse = new ResponseMessageViewModel(errors, "");
                     context.Response.StatusCode = (int)ex.HttpStatusCode;
                     await context.Response.WriteAsJsonAsync(errorResponse);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     dynamic errors = new ExpandoObject();
-#if DEBUG
-                    errors.ExceptionMessage = ex.Message;
-                    errors.StackTrace = ex.StackTrace;
-                    errors.Source = ex.Source;
-#endif
+                    // #if DEBUG
+                    //                    errors.ExceptionMessage = ex.Message;
+                    //                    errors.StackTrace = ex.StackTrace;
+                    //                    errors.Source = ex.Source;
+                    // #endif
                     errors.General = "خطا در اجرای درخواست شما.";
 
                     var errorResponse = new ResponseMessageViewModel(errors, "");

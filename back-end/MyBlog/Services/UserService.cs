@@ -183,12 +183,17 @@ namespace MyBlog.Services
                     throw new HttpException($"هیچ کاربری با نام کاربری یا ایمیل یا شماره موبایل {userModel.UserNameEmailPhone} پیدا نشد", nameof(LoginViewModel.UserNameEmailPhone), HttpStatusCode.NotFound);
                 }
 
+                if (user.LockoutEnd >= DateTime.Now)
+                {
+                    throw new HttpException("پنج بار تلاش ورود ناموفق. پنج دقیقه دیگر مجددا امتحان کنید", "", HttpStatusCode.Forbidden);
+                }
+
                 if (!await this.userManager.CheckPasswordAsync(user, userModel.Password))
                 {
                     throw new HttpException("رمز عبور نادرست است", nameof(LoginViewModel.Password), HttpStatusCode.Unauthorized);
                 }
 
-                if (!user.LockoutEnabled || (user.LockoutEnabled && user.LockoutEnd.HasValue && user.LockoutEnd <= DateTime.Now))
+                if (!user.LockoutEnabled || (user.LockoutEnabled && user.LockoutEnd.HasValue))
                 {
                     // save loginDatetime and last loginDateTime
                     user.LastLoginDateTime = user.LoginDateTime;
@@ -199,10 +204,6 @@ namespace MyBlog.Services
                     user.LockoutEnabled = false;
 
                     this.DbContext.SaveChanges();
-                }
-                else
-                {
-                    throw new HttpException("پنج بار تلاش ورود ناموفق. پنج دقیقه دیگر مجددا امتحان کنید", "", HttpStatusCode.Forbidden);
                 }
             }
             catch (HttpException error)

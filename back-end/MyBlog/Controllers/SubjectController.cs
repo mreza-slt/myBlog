@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.Models.ViewModels;
 using MyBlog.Models.ViewModels.Subject;
 using MyBlog.Services;
-using System.ComponentModel.DataAnnotations;
 
 namespace MyBlog.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/[Action]")]
+    [Route("[controller]/[Action]")]
     [ApiController]
     public class SubjectController : ControllerBase
     {

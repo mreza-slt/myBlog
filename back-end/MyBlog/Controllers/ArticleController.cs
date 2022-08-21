@@ -8,7 +8,7 @@ using MyBlog.Services;
 namespace MyBlog.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/[Action]")]
+    [Route("[controller]/[Action]")]
     [ApiController]
     public class ArticleController : ControllerBase
     {
