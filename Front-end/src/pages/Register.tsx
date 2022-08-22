@@ -1,87 +1,159 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Input from "../common/Input";
+import * as Yup from "yup";
 import { useState } from "react";
 import { UserService } from "../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
-import * as Yup from "yup";
-import { FormikProps, useFormik } from "formik";
-import { LoginUser } from "../interfaces/User";
+
+import { useFormik, FormikProps } from "formik";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { RegisterUser } from "../interfaces/User";
 
 // 1.managing states
-const initialValues: LoginUser = {
-  userNameEmailPhone: "",
+const initialValues: RegisterUser = {
+  title: "",
+  name: "",
+  surname: "",
+  userName: "",
+  email: "",
+  phoneNumber: "",
   password: "",
+  passwordConfirm: "",
 };
 
-//3.validation state with yup
+//3.validation state input with yup
 const validationSchema = Yup.object({
-  userNameEmailPhone: Yup.string().required("نام کاربری را وارد کنید"),
+  name: Yup.string()
+    .required("نام را وارد کنید")
+    .matches(/^[^<>~`@!#%^&*(){},./?$+=-_"'.,\\|0-9]+$/, {
+      message:
+        "نام را فقط با حروف تکمیل کنید و ازاعداد و کاراکتر ها استفاده نکنید",
+    }),
+
+  surname: Yup.string().matches(/^[^<>~`@!#%^&*(){},./?$+=-_"'.,\\|0-9]+$/, {
+    message:
+      "نام خانوادگی را فقط با حروف تکمیل کنید و ازاعداد و کاراکتر ها استفاده نکنید",
+  }),
+
+  userName: Yup.string().required("نام کاربری را وارد کنید"),
+  email: Yup.string().email("تایپ ایمیل صحیح نیست"),
+
+  phoneNumber: Yup.string()
+    .matches(/^(\+[0-9]{1,3}[- ]?)?[0-9]{0,100}$/, {
+      message: "شماره موبایل را فقط به صورت عدد وارد کنید ",
+    })
+    .min(11, "شماره موبایل شما باید 11 عدد باشد")
+    .max(11, "شماره موبایل شما نباید بیشتر از 11 عدد باشد")
+    .required("شماره موبایل را وارد کنید"),
+
   password: Yup.string()
     .min(6, "رمز عبور شما باید حداقل 6 کاراکتر باشد")
-    .required("رمز عبور را وارد کنید"),
+    .required("رمزعبور را وارد کنید"),
+
+  passwordConfirm: Yup.string()
+    .oneOf(
+      [Yup.ref("password"), null],
+      "تکرار رمز عبور باید با رمز اصلی یکی باشد"
+    )
+    .required("تکرار رمز عبور را وارد کنید"),
 });
 
-export default function Login(): JSX.Element {
+export default function Register(): JSX.Element {
   const [error, setError] = useState<Object | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [title, setTitle] = useState<boolean>(false);
 
   const history = useNavigate();
 
-  const onSubmit = async (userData: LoginUser) => {
+  async function onSubmit(userData: RegisterUser): Promise<void> {
     setLoading(true);
     try {
-      await UserService.Login(userData);
+      await UserService.Register({
+        ...userData,
+        title: title ? "خانم" : "آقای",
+      });
+      await UserService.Login({
+        userNameEmailPhone: userData.phoneNumber,
+        password: userData.password,
+      });
       setError(null);
       history("/");
     } catch (err: any) {
       setError(err.response.data.errors);
     }
     setLoading(false);
-  };
-
-  const formik: FormikProps<LoginUser> = useFormik<LoginUser>({
-    initialValues: initialValues,
+  }
+  const formik: FormikProps<RegisterUser> = useFormik<RegisterUser>({
+    initialValues,
     onSubmit,
     validationSchema,
     validateOnMount: true,
   });
 
   return (
-    <div className="h-screen bg-zinc-100">
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 h-full">
-        <div className="mx-auto w-full max-w-sm lg:w-96 shadow-3xl rounded-md  p-4">
+    <div className="h-screen flex">
+      <div className="flex flex-col justify-center w-full py-3 px-4 sm:px-6 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-5xl shadow-3xl px-3 rounded-lg">
           <div>
-            <h1 className="text-2xl text-center font-extrabold">وبلاگ</h1>
-            <p className="mt-2 text-sm text-gray">
+            <h2 className="md:mt-6 text-3xl font-extrabold text-gray-900">
+              ایجاد حساب کاربری جدید
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
               <Link
-                to="register"
+                to="login"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
-                ثبت نام
+                ورود
               </Link>
             </p>
           </div>
 
           <div className="mt-8">
-            <div className="mt-6">
-              <form onSubmit={formik.handleSubmit} className="space-y-6">
-                <div>
-                  <Input
-                    formik={formik}
-                    name="userNameEmailPhone"
-                    lable="نام کاربری"
-                  />
+            <div className="my-3">
+              <form
+                onSubmit={formik.handleSubmit}
+                className="grid md:grid-cols-2 gap-3 items-center"
+              >
+                <Input formik={formik} name="userName" lable="نام کاربری" />
+                {/* select title */}
+                <div role="button" className="flex items-center">
+                  <div
+                    onClick={() => setTitle(!title)}
+                    className="flex mt-10 border rounded-[3px] p-2 sm:p-[6px]"
+                  >
+                    <div className="flex flex-col">
+                      <FontAwesomeIcon icon={faAngleUp} size="xs" />
+                      <FontAwesomeIcon icon={faAngleDown} size="xs" />
+                    </div>
+                    <span className="mr-1">{title ? "خانم" : "آقای"}</span>
+                  </div>
+                  <div className="w-full">
+                    <Input formik={formik} name="name" lable="نام" />
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <Input
-                    formik={formik}
-                    name="password"
-                    lable="رمز عیور"
-                    type="password"
-                  />
-                </div>
+                <Input formik={formik} name="email" lable="ایمیل" />
+                <Input formik={formik} name="surname" lable="نام خانوادگی" />
+                <Input
+                  formik={formik}
+                  name="phoneNumber"
+                  lable="شماره موبایل"
+                  type="tel"
+                />
+                <Input
+                  formik={formik}
+                  name="password"
+                  lable="رمز عیور"
+                  type="password"
+                />
+                <Input
+                  formik={formik}
+                  name="passwordConfirm"
+                  lable="تکرار رمز عبور"
+                  type="password"
+                />
 
-                <div className="flex items-center justify-between">
+                <div className="flex self-end mb-[1px] justify-between">
                   <div className="flex items-center">
                     <input
                       id="remember-me"
@@ -115,7 +187,7 @@ export default function Login(): JSX.Element {
                       !formik.isValid ? "opacity-50" : ""
                     }`}
                   >
-                    ورود
+                    ثبت نام
                     {loading ? (
                       <div role="status">
                         <svg
