@@ -19,11 +19,10 @@ builder.Services.AddCors(options =>
         name: myAllowSpecificOrigins,
         policy =>
                       {
-                          policy.WithOrigins(
-                              "http://localhost:3006",
-                              "http://www.contoso.com")
+                          policy.WithOrigins("http://localhost:3006")
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                       });
 });
 
@@ -78,8 +77,7 @@ builder.Services.AddControllers();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "MyBlog";
-    options.Cookie.Path = "/";
-    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.HttpOnly = true;
     options.SlidingExpiration = true;
     options.LoginPath = "/User/UnAuthorizedLogin";
