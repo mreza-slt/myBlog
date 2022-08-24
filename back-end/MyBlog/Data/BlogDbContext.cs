@@ -17,7 +17,7 @@ namespace MyBlog.Data
 
         public virtual DbSet<ConfirmCode> ConfirmCodes { get; set; } = null!;
 
-        public virtual DbSet<Article> Articles { get; set; } = null!;
+        public virtual DbSet<Post> Posts { get; set; } = null!;
 
         public virtual DbSet<Subject> Subjects { get; set; } = null!;
 
@@ -38,7 +38,7 @@ namespace MyBlog.Data
             modelBuilder.Entity<UserToken>(ModelBuilders.UserTokenBuilder.Build);
 
             modelBuilder.Entity<ConfirmCode>(ModelBuilders.ConfirmCodeBuilder.Build);
-            modelBuilder.Entity<Article>(ModelBuilders.ArticleBuilder.Build);
+            modelBuilder.Entity<Post>(ModelBuilders.PostBuilder.Build);
             modelBuilder.Entity<Subject>(ModelBuilders.SubjectBuilder.Build);
         }
     }

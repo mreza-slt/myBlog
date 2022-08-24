@@ -22,7 +22,47 @@ namespace MyBlog.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("MyBlog.Models.DataModels.Article", b =>
+            modelBuilder.Entity("MyBlog.Models.DataModels.ConfirmCode", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CodeType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RowId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "CodeType");
+
+                    b.HasIndex("UserId", "Code", "CodeType");
+
+                    b.ToTable("ConfirmCode", (string)null);
+                });
+
+            modelBuilder.Entity("MyBlog.Models.DataModels.Post", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,49 +105,9 @@ namespace MyBlog.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex(new[] { "RowId" }, "IX_Article_RowId");
+                    b.HasIndex(new[] { "RowId" }, "IX_Post_RowId");
 
-                    b.ToTable("Article", (string)null);
-                });
-
-            modelBuilder.Entity("MyBlog.Models.DataModels.ConfirmCode", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CodeType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpireDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newsequentialid()");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RowId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId", "CodeType");
-
-                    b.HasIndex("UserId", "Code", "CodeType");
-
-                    b.ToTable("ConfirmCode", (string)null);
+                    b.ToTable("Post", (string)null);
                 });
 
             modelBuilder.Entity("MyBlog.Models.DataModels.Role", b =>
@@ -437,25 +437,6 @@ namespace MyBlog.Migrations
                     b.ToTable("UserToken", (string)null);
                 });
 
-            modelBuilder.Entity("MyBlog.Models.DataModels.Article", b =>
-                {
-                    b.HasOne("MyBlog.Models.DataModels.Subject", "Subject")
-                        .WithMany("Articles")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("MyBlog.Models.DataModels.User", "User")
-                        .WithMany("Articles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MyBlog.Models.DataModels.ConfirmCode", b =>
                 {
                     b.HasOne("MyBlog.Models.DataModels.User", "User")
@@ -463,6 +444,25 @@ namespace MyBlog.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyBlog.Models.DataModels.Post", b =>
+                {
+                    b.HasOne("MyBlog.Models.DataModels.Subject", "Subject")
+                        .WithMany("Posts")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("MyBlog.Models.DataModels.User", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
 
                     b.Navigation("User");
                 });
@@ -530,16 +530,16 @@ namespace MyBlog.Migrations
 
             modelBuilder.Entity("MyBlog.Models.DataModels.Subject", b =>
                 {
-                    b.Navigation("Articles");
-
                     b.Navigation("Children");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("MyBlog.Models.DataModels.User", b =>
                 {
-                    b.Navigation("Articles");
-
                     b.Navigation("ConfirmCodes");
+
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

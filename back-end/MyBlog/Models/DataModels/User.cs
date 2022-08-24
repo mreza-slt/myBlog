@@ -8,7 +8,7 @@ namespace MyBlog.Models.DataModels
         public User()
         {
             this.ConfirmCodes = new HashSet<ConfirmCode>();
-            this.Articles = new HashSet<Article>();
+            this.Posts = new HashSet<Post>();
         }
 
         public User(
@@ -73,6 +73,6 @@ namespace MyBlog.Models.DataModels
 
         public ICollection<ConfirmCode> ConfirmCodes { get; set; }
 
-        public ICollection<Article> Articles { get; set; }
+        public ICollection<Post> Posts { get; set; }
     }
 }

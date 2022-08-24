@@ -1,9 +1,9 @@
-﻿namespace MyBlog.Models.ViewModels.Article
+﻿namespace MyBlog.Models.ViewModels.Post
 {
     /// <summary>
-    /// نمایش اطلاعات مقاله
+    /// نمایش اطلاعات پست
     /// </summary>
-    public class ArticleMiniViewModel
+    public class PostMiniViewModel
     {
         /// <summary>
         /// شناسه
@@ -21,9 +21,14 @@
         public string Text { get; set; } = null!;
 
         /// <summary>
-        /// پروفایل
+        /// عکس
         /// </summary>
-        public string? Avatar { get; set; }
+        public string? Image { get; set; }
+
+        /// <summary>
+        /// عکس کاریر
+        /// </summary>
+        public string? UserAvatar { get; set; }
 
         /// <summary>
         /// تاریخ ثبت
@@ -36,13 +41,13 @@
         public int? NumberOfVisits { get; set; }
 
         /// <summary>
-        /// شناسه نویسنده
+        /// نام نویسنده
         /// </summary>
-        public long UserId { get; set; }
+        public string UserName { get; set; } = null!;
 
         /// <summary>
-        /// شناسه موضوع والد
+        ///  نام دسته بندی موضوع
         /// </summary>
-        public long SubjectId { get; set; }
+        public string SubjectName { get; set; } = null!;
     }
 }

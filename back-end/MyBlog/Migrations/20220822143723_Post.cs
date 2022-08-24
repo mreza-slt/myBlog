@@ -5,10 +5,33 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyBlog.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Post : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Subject",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RowId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    FullCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubjectType = table.Column<int>(type: "int", nullable: false),
+                    ParentId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subject", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subject_Subject_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Subject",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
@@ -22,7 +45,9 @@ namespace MyBlog.Migrations
                     FullName = table.Column<string>(type: "nvarchar(552)", maxLength: 552, nullable: true, computedColumnSql: "(ltrim(rtrim((((isnull([Title],'')+' ')+[Name])+' ')+isnull([Surname],''))))", stored: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RegisterDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdateDateTime = table.Column<DateTime>(type: "datetime", nullable: false),
+                    LastUpdateDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LoginDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastLoginDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -31,7 +56,7 @@ namespace MyBlog.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(MAX)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "char(11)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "char(11)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -58,6 +83,59 @@ namespace MyBlog.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserRole", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConfirmCode",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RowId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    CodeType = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpireDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConfirmCode", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConfirmCode_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Post",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RowId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
+                    Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegisterDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NumberOfVisits = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    SubjectId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Post", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Post_Subject_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subject",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Post_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -172,6 +250,47 @@ namespace MyBlog.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConfirmCode_RowId",
+                table: "ConfirmCode",
+                column: "RowId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConfirmCode_UserId_Code_CodeType",
+                table: "ConfirmCode",
+                columns: new[] { "UserId", "Code", "CodeType" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConfirmCode_UserId_CodeType",
+                table: "ConfirmCode",
+                columns: new[] { "UserId", "CodeType" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_RowId",
+                table: "Post",
+                column: "RowId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_SubjectId",
+                table: "Post",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_UserId",
+                table: "Post",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subject_ParentId",
+                table: "Subject",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subject_RowId",
+                table: "Subject",
+                column: "RowId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "User",
                 column: "NormalizedEmail");
@@ -249,6 +368,12 @@ namespace MyBlog.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ConfirmCode");
+
+            migrationBuilder.DropTable(
+                name: "Post");
+
+            migrationBuilder.DropTable(
                 name: "UserClaim");
 
             migrationBuilder.DropTable(
@@ -262,6 +387,9 @@ namespace MyBlog.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserToken");
+
+            migrationBuilder.DropTable(
+                name: "Subject");
 
             migrationBuilder.DropTable(
                 name: "UserRole");

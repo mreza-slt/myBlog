@@ -3,11 +3,11 @@
 namespace MyBlog.Models.DataModels
 {
     /// <summary>
-    /// مقاله
+    /// پست
     /// </summary>
-    public class Article
+    public class Post
     {
-        public Article(string title, string text, string? avatar, long userId, long subjectId)
+        public Post(string title, string text, string? avatar, long userId, long subjectId)
         {
             this.Title = title;
             this.Text = text;

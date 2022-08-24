@@ -9,7 +9,7 @@ namespace MyBlog.Models.DataModels
     {
         public Subject()
         {
-            this.Articles = new HashSet<Article>();
+            this.Posts = new HashSet<Post>();
             this.Children = new HashSet<Subject>();
         }
 
@@ -52,6 +52,6 @@ namespace MyBlog.Models.DataModels
 
         public ICollection<Subject> Children { get; set; }
 
-        public ICollection<Article> Articles { get; set; }
+        public ICollection<Post> Posts { get; set; }
     }
 }

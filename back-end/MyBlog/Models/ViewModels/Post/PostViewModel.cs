@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyBlog.Models.ViewModels.Article
+namespace MyBlog.Models.ViewModels.Post
 {
-    public class ArticleViewModel
+    public class PostViewModel
     {
         /// <summary>
         /// عنوان
@@ -14,7 +14,7 @@ namespace MyBlog.Models.ViewModels.Article
         /// <summary>
         /// متن
         /// </summary>
-        [Required(ErrorMessage = "متن مقاله خود را وارد کنید")]
+        [Required(ErrorMessage = "متن پست خود را وارد کنید")]
         public string Text { get; set; } = null!;
 
         /// <summary>
