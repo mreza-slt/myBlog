@@ -54,7 +54,7 @@ export default function Login(): JSX.Element {
             <h1 className="text-2xl text-center font-extrabold">وبلاگ</h1>
             <p className="mt-2 text-sm text-gray">
               <Link
-                to="register"
+                to="/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 ثبت نام
