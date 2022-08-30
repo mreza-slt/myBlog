@@ -9,3 +9,11 @@ export interface PostForm {
   userName: string;
   subjectName: string;
 }
+
+export interface RegisterPostForm {
+  title: string;
+  text: string;
+  image: File | null;
+  subjectId: string;
+  childSubjectId: string;
+}

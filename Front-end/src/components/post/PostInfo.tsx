@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import { PostForm } from "../../interfaces/Post";
 import timeSince from "../../util/timeSince";
 
-export default function PostInfo() {
+export default function PostInfo(): JSX.Element {
   const location = useLocation();
   const post = location.state as PostForm;
 
