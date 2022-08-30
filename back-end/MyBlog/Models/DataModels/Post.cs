@@ -7,11 +7,11 @@ namespace MyBlog.Models.DataModels
     /// </summary>
     public class Post
     {
-        public Post(string title, string text, string? avatar, long userId, long subjectId)
+        public Post(string title, string text, string? image, long userId, long subjectId)
         {
             this.Title = title;
             this.Text = text;
-            this.Avatar = avatar;
+            this.Image = image;
             this.UserId = userId;
             this.SubjectId = subjectId;
 
@@ -36,7 +36,7 @@ namespace MyBlog.Models.DataModels
         /// <summary>
         /// پروفایل
         /// </summary>
-        public string? Avatar { get; set; }
+        public string? Image { get; set; }
 
         /// <summary>
         /// تاریخ ثبت

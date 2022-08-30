@@ -12,9 +12,9 @@ namespace MyBlog.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        public PostController(PostService PostService)
+        public PostController(PostService postService)
         {
-            this.PostService = PostService;
+            this.PostService = postService;
         }
 
         private PostService PostService { get; }
@@ -36,7 +36,7 @@ namespace MyBlog.Controllers
         /// <summary>
         /// ثبت پست جدید
         /// </summary>
-        /// <param name="PostModel">اطلاعات پست</param>
+        /// <param name="postModel">اطلاعات پست</param>
         /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
         /// <remarks>
         /// برای ایجاد پست جدید از این متد استفاده می شود
@@ -46,11 +46,11 @@ namespace MyBlog.Controllers
         /// <response code="406 NotAcceptable">در صورتی که درخواست ارسالی قابل قبول نباشد</response>
         /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
         [HttpPost]
-        public async Task<ResponseMessageViewModel> Register([FromBody] PostViewModel PostModel)
+        public async Task<ResponseMessageViewModel> Register([FromForm] PostViewModel postModel)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return await this.PostService.Register(PostModel, Convert.ToInt64(userId));
+            return await this.PostService.Register(postModel, Convert.ToInt64(userId));
         }
     }
 }

@@ -10,16 +10,15 @@ namespace MyBlog.Services
         /// and using the other two methods, it checks the format and changes the size of the image.
         /// </summary>
         /// <returns>imageBase64</returns>
-        public string? FixImageSize(string? imageBase64, int width)
+        public string? FixImageSize(IFormFile? imageFile, int width)
         {
-            if (!string.IsNullOrEmpty(imageBase64))
+            if (imageFile != null)
             {
                 // check image format
-                Image? image = imageBase64.CheckImageFormat();
+                Image? image = imageFile.CheckImageFormat();
 
                 // get avatarBase64 and FixSize
-                imageBase64 = image!.FixedImageSize(width);
-                return imageBase64;
+                return image!.FixedImageSize(width);
             }
 
             return null;

@@ -35,14 +35,15 @@ namespace MyBlog.Controllers
         /// <summary>
         /// دریافت لیست موضوعات
         /// </summary>
+        /// <param name="parentId">شناسه والد موضوع</param>
         /// <returns>A <see cref="SubjectMiniViewModel"/> : return all Subjects list</returns>
         /// <remarks>
         /// برای  دریافت لیست موضوعات از این متد استفاده می شود
         /// </remarks>
         [HttpGet]
-        public SubjectMiniViewModel[] GetAll()
+        public SubjectMiniViewModel[] GetAll(long? parentId)
         {
-            return this.SubjectService.GetAll();
+            return this.SubjectService.GetAll(parentId == 0 ? null : parentId);
         }
 
         /// <summary>

@@ -37,16 +37,16 @@ namespace MyBlog.Services
         {
             Dictionary<string, string> errors = new();
 
-            Subject? majorSubject = this.SubjectService.FindSubject(postModel.MajorSubjectId!.Value, SubjectType.MajorSubject);
+            Subject? majorSubject = this.SubjectService.FindSubject(postModel.SubjectId!.Value, SubjectType.MajorSubject);
             if (majorSubject == null)
             {
-                errors.Add(nameof(PostViewModel.MajorSubjectId), $"هیچ دسته بندی موضوعات با شناسه {postModel.MajorSubjectId} پیدا نشد");
+                errors.Add(nameof(PostViewModel.SubjectId), $"هیچ دسته بندی موضوعات با شناسه {postModel.SubjectId} پیدا نشد");
             }
 
-            Subject? forumSubjectId = this.SubjectService.FindSubject(postModel.ForumSubjectId!.Value, SubjectType.ForumSubject);
-            if (forumSubjectId == null)
+            Subject? childSubjectId = this.SubjectService.FindSubject(postModel.ChildSubjectId!.Value, SubjectType.ForumSubject);
+            if (childSubjectId == null)
             {
-                errors.Add(nameof(PostViewModel.ForumSubjectId), $"هیچ موضوعی با شناسه {postModel.ForumSubjectId} پیدا نشد");
+                errors.Add(nameof(PostViewModel.ChildSubjectId), $"هیچ موضوعی با شناسه {postModel.ChildSubjectId} پیدا نشد");
             }
 
             if (errors.Count > 0)
@@ -54,9 +54,9 @@ namespace MyBlog.Services
                 throw new HttpException(errors, HttpStatusCode.NotFound);
             }
 
-            if (forumSubjectId!.ParentId != majorSubject!.Id)
+            if (childSubjectId!.ParentId != majorSubject!.Id)
             {
-                throw new HttpException($"موضوع {forumSubjectId.Name} را نمی توانید با دسته بندی موضوع {majorSubject.Name} ثبت کنید", $"{nameof(PostViewModel.MajorSubjectId)}, {nameof(PostViewModel.ForumSubjectId)}", HttpStatusCode.NotAcceptable);
+                throw new HttpException($"موضوع {childSubjectId.Name} را نمی توانید با دسته بندی موضوع {majorSubject.Name} ثبت کنید", $"{nameof(PostViewModel.SubjectId)}, {nameof(PostViewModel.ChildSubjectId)}", HttpStatusCode.NotAcceptable);
             }
 
             bool title = this.IsExistTitle(postModel.Title);
@@ -66,20 +66,21 @@ namespace MyBlog.Services
             }
 
             // Check format and fix size Image
+            string? image;
             try
             {
-                postModel.Avatar = this.ImageService.FixImageSize(postModel.Avatar, 900);
+                image = this.ImageService.FixImageSize(postModel.Image, 900);
             }
             catch (ArgumentException)
             {
-                throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Avatar), HttpStatusCode.BadRequest);
+                throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Image), HttpStatusCode.BadRequest);
             }
             catch (FormatException)
             {
-                throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Avatar), HttpStatusCode.BadRequest);
+                throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Image), HttpStatusCode.BadRequest);
             }
 
-            Post post = new(postModel.Title, postModel.Text, postModel.Avatar, userId, forumSubjectId.Id);
+            Post post = new(postModel.Title, postModel.Text, image, userId, childSubjectId.Id);
             await this.DbContext.AddAsync(post);
             await this.DbContext.SaveChangesAsync();
 
@@ -89,7 +90,7 @@ namespace MyBlog.Services
         // Database Methods
         public PostMiniViewModel[] FindPosts()
         {
-            return this.DbContext.Posts.Select(x => new PostMiniViewModel { Id = x.Id, UserName = x.User.Name, Title = x.Title, Text = x.Text, SubjectName = x.Subject.Name, RegisterDateTime = x.RegisterDateTime, NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits, Image = x.Avatar, UserAvatar = x.User.Avatar }).ToArray();
+            return this.DbContext.Posts.Select(x => new PostMiniViewModel { Id = x.Id, UserName = x.User.Name, Title = x.Title, Text = x.Text, SubjectName = x.Subject.Name, RegisterDateTime = x.RegisterDateTime, NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits, Image = x.Image, UserAvatar = x.User.Avatar }).ToArray();
         }
 
         public bool IsExistTitle(string title)

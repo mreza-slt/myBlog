@@ -13,5 +13,15 @@
 
             return bytes;
         }
+
+        public static string FileToBase64(this IFormFile file)
+        {
+            using var ms = new MemoryStream();
+            file.CopyTo(ms);
+            byte[] fileBytes = ms.ToArray();
+            string stringFile = Convert.ToBase64String(fileBytes);
+
+            return stringFile;
+        }
     }
 }

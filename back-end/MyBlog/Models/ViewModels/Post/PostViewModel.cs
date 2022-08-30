@@ -20,18 +20,18 @@ namespace MyBlog.Models.ViewModels.Post
         /// <summary>
         /// پروفایل
         /// </summary>
-        public string? Avatar { get; set; }
+        public IFormFile? Image { get; set; }
 
         /// <summary>
         ///  شناسه دسته بندی موضوعات
         /// </summary>
         [Required(ErrorMessage = "شناسه دسته بندی موضوعات را وارد کنید")]
-        public long? MajorSubjectId { get; set; }
+        public long? SubjectId { get; set; }
 
         /// <summary>
         /// شناسه موضوع
         /// </summary>
         [Required(ErrorMessage = "شناسه موضوع را وارد کنید")]
-        public long? ForumSubjectId { get; set; }
+        public long? ChildSubjectId { get; set; }
     }
 }

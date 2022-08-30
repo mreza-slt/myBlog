@@ -39,7 +39,7 @@ namespace MyBlog.Models.DataModels
             this.LastUpdateDateTime = DateTime.Now;
         }
 
-        internal static void Copy(ProfileUserViewModel userModel, User user)
+        internal static void Copy(ProfileUserViewModel userModel, string? avatar, User user)
         {
             user.Title = userModel.Title;
             user.Name = userModel.Name;
@@ -47,7 +47,7 @@ namespace MyBlog.Models.DataModels
             user.UserName = !string.IsNullOrEmpty(userModel.UserName) ? userModel.UserName : userModel.PhoneNumber;
             user.Email = userModel.Email;
             user.PhoneNumber = userModel.PhoneNumber;
-            user.Avatar = userModel.Avatar;
+            user.Avatar = avatar;
             user.LastUpdateDateTime = DateTime.Now;
         }
 

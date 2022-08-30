@@ -61,7 +61,6 @@ namespace MyBlog.Models.ViewModels.User
         /// <summary>
         /// عکس پروفایل
         /// </summary>
-        [DefaultValue("")]
-        public string? Avatar { get; set; }
+        public IFormFile? Avatar { get; set; }
     }
 }

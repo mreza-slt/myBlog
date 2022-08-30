@@ -138,9 +138,10 @@ namespace MyBlog.Services
             }
 
             // Check format and fix size Image
+            string? avatar;
             try
             {
-                userModel.Avatar = this.ImageService.FixImageSize(userModel.Avatar, 300);
+                avatar = this.ImageService.FixImageSize(userModel.Avatar, 300);
             }
             catch (ArgumentException)
             {
@@ -152,7 +153,7 @@ namespace MyBlog.Services
             }
 
             // Update user with Internal in model
-            User.Copy(userModel, user);
+            User.Copy(userModel, avatar, user);
 
             IdentityResult result = await this.userManager.UpdateAsync(user);
             foreach (var error in result.Errors)

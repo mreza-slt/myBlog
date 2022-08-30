@@ -88,9 +88,9 @@ namespace MyBlog.Services
             }
         }
 
-        public SubjectMiniViewModel[] GetAll()
+        public SubjectMiniViewModel[] GetAll(long? parentId)
         {
-            Subject[] subjects = this.FindSubjects();
+            Subject[] subjects = this.FindSubjects(parentId);
             SubjectMiniViewModel[] subjectMiniModels = subjects.Select(x => new SubjectMiniViewModel { Id = x.Id, Name = x.Name, ParentId = x.ParentId, SubjectType = x.SubjectType, Code = x.Code, FullCode = x.FullCode }).ToArray();
 
             return subjectMiniModels;
@@ -212,9 +212,9 @@ namespace MyBlog.Services
         }
 
         // Datebase Methods
-        public Subject[] FindSubjects()
+        public Subject[] FindSubjects(long? parentId)
         {
-            return this.DbContext.Subjects.ToArray();
+            return this.DbContext.Subjects.Where(x => x.ParentId == parentId).ToArray();
         }
 
         public int? FindMaxCode(long? parentId)

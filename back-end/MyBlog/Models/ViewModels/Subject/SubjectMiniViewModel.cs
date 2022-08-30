@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MyBlog.Models.Enums.Subject;
+﻿using MyBlog.Models.Enums.Subject;
 
 namespace MyBlog.Models.ViewModels.Subject
 {

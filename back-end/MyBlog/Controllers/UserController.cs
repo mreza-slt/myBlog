@@ -68,7 +68,7 @@ namespace MyBlog.Controllers
         /// <response code="400 BadRequest">در صورتی که مقادیر ورودی نامعتبر باشد</response>
         /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
         [HttpPut]
-        public async Task<ResponseMessageViewModel> Profile([FromBody] ProfileUserViewModel userModel)
+        public async Task<ResponseMessageViewModel> Profile([FromForm] ProfileUserViewModel userModel)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 

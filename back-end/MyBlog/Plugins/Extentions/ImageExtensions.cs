@@ -51,9 +51,11 @@ namespace MyBlog.Plugins.Extentions
             return imageString;
         }
 
-        public static Image? CheckImageFormat(this string imageString)
+        public static Image? CheckImageFormat(this IFormFile imageFile)
         {
-            byte[] byteImage = imageString.StringToByteArray();
+            string? base64Image = imageFile.FileToBase64();
+
+            byte[] byteImage = base64Image.StringToByteArray();
 
             if (byteImage.Length > 0)
             {
@@ -63,7 +65,7 @@ namespace MyBlog.Plugins.Extentions
             }
             else
             {
-                throw new ArgumentException(null, nameof(imageString));
+                throw new ArgumentException(null, nameof(imageFile));
             }
         }
     }
