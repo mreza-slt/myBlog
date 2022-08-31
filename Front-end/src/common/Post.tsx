@@ -25,7 +25,7 @@ export default function Post({ post }: PostProps): JSX.Element {
         ) : (
           ""
         )}
-        <div className="px-1 bg-white h-full flex flex-col justify-between">
+        <div className="bg-white h-full flex flex-col justify-between">
           <div
             className={classNames(
               "mt-1 pr-1 overflow-hidden",
@@ -46,7 +46,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               </p>
             )}
           </div>
-          <div className="flex items-center pb-1">
+          <div className="flex items-center pb-1 bg-gray-100">
             <div className="flex-shrink-0">
               <img
                 className="w-9 rounded-full px-[3px] py-[2px]"

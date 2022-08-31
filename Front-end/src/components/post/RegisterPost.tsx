@@ -28,11 +28,15 @@ const validationSchema = Yup.object({
   childSubjectId: Yup.string().required("موضوع را مشخص کنید"),
 });
 
-export default function RegisterPost() {
+type Props = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function RegisterPost({ setOpen, open }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [image, setImage] = useState<File>();
   const [error, setError] = useState<Object | null>(null);
-  const [open, setOpen] = useState(true);
   const [subjects, setSubjects] = useState<SubjectForm[]>([]);
   const [childSubjects, setChildSubjects] = useState<SubjectForm[]>([]);
 
@@ -88,11 +92,15 @@ export default function RegisterPost() {
     setImage(event.target.files[0]);
   };
 
+  const closeHandler = () => {
+    setOpen(false);
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="mt-24 fixed z-10 inset-0 overflow-y-auto"
         onClose={setOpen}
       >
         <div className="flex justify-center pt-4 items-center px-4 pb-20 text-center sm:block sm:p-0">
@@ -112,7 +120,7 @@ export default function RegisterPost() {
                 <button
                   type="button"
                   className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={() => setOpen(false)}
+                  onClick={closeHandler}
                 >
                   <span className="sr-only">Close</span>
                   <FontAwesomeIcon
@@ -196,6 +204,7 @@ export default function RegisterPost() {
                   )}
                 </button>
                 <button
+                  onClick={closeHandler}
                   type="button"
                   className="inline-flex items-center mr-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >

@@ -26,7 +26,7 @@ export default function GetAllPost(): JSX.Element {
 
   return (
     <>
-      <div className="h-full flex items-center justify-center bg-gray-50 pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+      <div className="h-full flex items-center justify-center bg-gray-100 pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
         {loading ? (
           <svg
             className="inline mr-3 w-12 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600"

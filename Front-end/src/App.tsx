@@ -4,15 +4,18 @@ import PostPage from "./pages/PostPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { Navigate } from "react-router-dom";
+import Layout from "./layout/Layout";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/post" />} />
-      <Route path="/post/*" element={<PostPage />} />
-      <Route path="login" element={<Login />} />
-      <Route path="Register" element={<Register />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Navigate to="/post" />} />
+        <Route path="/post/*" element={<PostPage />} />
+        <Route path="login" element={<Login />} />
+        <Route path="Register" element={<Register />} />
+      </Routes>
+    </Layout>
   );
 }
 
