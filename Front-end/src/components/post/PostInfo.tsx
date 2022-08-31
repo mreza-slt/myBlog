@@ -10,13 +10,18 @@ export default function PostInfo(): JSX.Element {
     <div className="relative py-16 bg-white">
       <div className="relative px-4 sm:px-6 lg:px-8">
         <div className="text-lg max-w-prose mx-auto">
-          <img
-            className="w-full rounded-lg bg-red-50"
-            src={post.image}
-            alt={`imagePost ${post.id}`}
-            width={1310}
-            height={873}
-          />
+          {post.image ? (
+            <img
+              className="w-full rounded-lg bg-red-50"
+              src={post.image}
+              alt=""
+              width={1310}
+              height={873}
+            />
+          ) : (
+            ""
+          )}
+
           <h1 className="mr-2 mt-6 block font-bold tracking-tight text-gray-800 sm:text-2xl">
             {post.title}
           </h1>
@@ -25,7 +30,7 @@ export default function PostInfo(): JSX.Element {
               <img
                 className="ml-3 pull-xs-right h-9 w-9 rounded-full"
                 src={post.userAvatar}
-                alt="userAvatar"
+                alt=""
               />
               <small>
                 <span className="text-red-600">نویسنده : </span>

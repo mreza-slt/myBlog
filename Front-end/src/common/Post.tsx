@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { PostForm } from "../interfaces/Post";
 import timeSince from "../util/timeSince";
@@ -24,19 +25,31 @@ export default function Post({ post }: PostProps): JSX.Element {
         ) : (
           ""
         )}
-        <div className="bg-white flex flex-col justify-between">
-          <div className="mt-1 pr-1 h-[5.3rem] overflow-hidden">
+        <div className="px-1 bg-white h-full flex flex-col justify-between">
+          <div
+            className={classNames(
+              "mt-1 pr-1 overflow-hidden",
+              post.image ? "h-[5.3rem]" : "h-[18rem]"
+            )}
+          >
             <p className="text-sm font-medium text-indigo-600">
               <span className="hover:underline">{post.subjectName}</span>
             </p>
-            <h2 className="text-[0.9rem] font-semibold text-gray-900 hover:text-red-600">
+            <h2 className="mt-1 text-[1rem] font-semibold text-gray-900 hover:text-red-600">
               {post.title}
             </h2>
+            {post.image ? (
+              ""
+            ) : (
+              <p className="mt-3 font-medium text-sm text-gray-600">
+                {post.text}
+              </p>
+            )}
           </div>
-          <div className="flex items-center h-8">
+          <div className="flex items-center pb-1">
             <div className="flex-shrink-0">
               <img
-                className="h-9 w-9 rounded-full px-[3px] py-[2px]"
+                className="w-9 rounded-full px-[3px] py-[2px]"
                 src={post.userAvatar}
                 alt=""
               />

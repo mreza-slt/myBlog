@@ -13,7 +13,6 @@ export interface PostForm {
 export interface RegisterPostForm {
   title: string;
   text: string;
-  image: File | null;
   subjectId: string;
   childSubjectId: string;
 }

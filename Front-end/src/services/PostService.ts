@@ -6,12 +6,12 @@ export class PostService {
     return http.get("Post/GetAll");
   };
 
-  public static Register = (postData: RegisterPostForm) => {
+  public static Register = (postData: RegisterPostForm, image: File) => {
     let formData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
-    formData.append("image", postData.image!);
+    formData.append("image", image);
     formData.append("subjectId", postData.subjectId);
     formData.append("childSubjectId", postData.childSubjectId);
     formData.append("text", postData.text);
