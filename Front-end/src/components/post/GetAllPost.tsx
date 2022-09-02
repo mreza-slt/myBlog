@@ -1,28 +1,17 @@
-import { useEffect, useState } from "react";
-import { PostForm } from "../../interfaces/Post";
-import { PostService } from "../../services/PostService";
+import { useEffect } from "react";
 import Post from "../../common/Post";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../features/store";
+import { getAsyncPosts } from "../../features/post/postSlice";
+import { GetPostData } from "../../models/interfaces/Post";
 
 export default function GetAllPost(): JSX.Element {
-  const [posts, setPosts] = useState<PostForm[]>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const { posts, loading } = useSelector((state: RootState) => state.post);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getAll()
-      .then((res) => {
-        setPosts(res.data);
-      })
-      .catch((err) => {
-        // TODO
-        throw err;
-      });
-    setLoading(false);
-  }, []);
-
-  const getAll = async () => {
-    const post = await PostService.GetAll();
-    return post;
-  };
+    dispatch(getAsyncPosts());
+  }, [dispatch]);
 
   return (
     <>
@@ -47,7 +36,7 @@ export default function GetAllPost(): JSX.Element {
           <div className="relative max-w-7xl mx-auto">
             {posts && posts.length > 0 ? (
               <div className="mt-12 max-w-lg mx-auto grid gap-5  xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
-                {posts.map((post) => (
+                {posts.map((post: GetPostData) => (
                   <Post key={post.id} post={post} />
                 ))}
               </div>

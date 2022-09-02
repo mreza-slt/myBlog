@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { PostForm } from "../interfaces/Post";
+import { GetPostData } from "../models/interfaces/Post";
 import timeSince from "../util/timeSince";
 
 type PostProps = {
-  post: PostForm;
+  post: GetPostData;
 };
 
 export default function Post({ post }: PostProps): JSX.Element {

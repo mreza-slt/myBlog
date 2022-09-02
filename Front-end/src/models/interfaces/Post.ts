@@ -1,4 +1,4 @@
-export interface PostForm {
+export interface GetPostData {
   id: number;
   title: string;
   text: string;
@@ -10,9 +10,17 @@ export interface PostForm {
   subjectName: string;
 }
 
-export interface RegisterPostForm {
+export interface SetPostData {
   title: string;
   text: string;
+  subjectId: string;
+  childSubjectId: string;
+}
+
+export interface PostDataForm {
+  title: string;
+  text: string;
+  image: File;
   subjectId: string;
   childSubjectId: string;
 }

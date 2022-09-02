@@ -5,7 +5,7 @@ import { UserService } from "../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FormikProps, useFormik } from "formik";
-import { LoginUser } from "../interfaces/User";
+import { LoginUser } from "../models/interfaces/User";
 
 // 1.managing states
 const initialValues: LoginUser = {

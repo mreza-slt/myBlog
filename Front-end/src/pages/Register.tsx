@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik, FormikProps } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
-import { RegisterUser } from "../interfaces/User";
+import { RegisterUser } from "../models/interfaces/User";
 
 // 1.managing states
 const initialValues: RegisterUser = {

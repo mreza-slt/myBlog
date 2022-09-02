@@ -1,4 +1,4 @@
-import { RegisterPostForm } from "../interfaces/Post";
+import { PostDataForm } from "../models/interfaces/Post";
 import http from "./httpRequest";
 
 export class PostService {
@@ -6,12 +6,16 @@ export class PostService {
     return http.get("Post/GetAll");
   };
 
-  public static Register = (postData: RegisterPostForm, image: File) => {
+  public static Get = (id: number) => {
+    return http.get(`Post/Get?id=${id}`);
+  };
+
+  public static Register = (postData: PostDataForm) => {
     let formData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
-    formData.append("image", image);
+    formData.append("image", postData.image);
     formData.append("subjectId", postData.subjectId);
     formData.append("childSubjectId", postData.childSubjectId);
     formData.append("text", postData.text);

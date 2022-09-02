@@ -1,4 +1,4 @@
-import { LoginUser, RegisterUser } from "../interfaces/User";
+import { LoginUser, RegisterUser } from "../models/interfaces/User";
 import http from "./httpRequest";
 
 export class UserService {

@@ -2,18 +2,21 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { RegisterPostForm } from "../../interfaces/Post";
+import { SetPostData } from "../../models/interfaces/Post";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 import { PostService } from "../../services/PostService";
 import Input from "../../common/Input";
 import Select from "../../common/Select";
 import { SubjectService } from "../../services/SubjectService";
-import { SubjectForm } from "../../interfaces/Subject";
+import { SubjectForm } from "../../models/interfaces/Subject";
 import classNames from "classnames";
+import { useDispatch, useSelector } from "react-redux";
+import { registerAsyncPost } from "../../features/post/postSlice";
+import { RootState } from "../../features/store";
 
 // 1.managing states
-const initialValues: RegisterPostForm = {
+const initialValues: SetPostData = {
   title: "",
   text: "",
   subjectId: "",
@@ -34,24 +37,20 @@ type Props = {
 };
 
 export default function RegisterPost({ setOpen, open }: Props) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<File>();
-  const [error, setError] = useState<Object | null>(null);
+  const { error, loading } = useSelector((state: RootState) => state.post);
+  const dispatch = useDispatch();
+  console.log(error);
+
+  const [image, setImage] = useState<File | null>(null);
   const [subjects, setSubjects] = useState<SubjectForm[]>([]);
   const [childSubjects, setChildSubjects] = useState<SubjectForm[]>([]);
 
-  const onSubmit = async (postData: RegisterPostForm) => {
-    setLoading(true);
-    try {
-      await PostService.Register(postData, image!);
-      setError(null);
-    } catch (err: any) {
-      setError(err.response.data.errors);
-    }
-    setLoading(false);
+  const onSubmit = async (postData: SetPostData) => {
+    const post = dispatch(registerAsyncPost({ ...postData, image: image }));
+    dispatch(registerAsyncPost(post.data));
   };
 
-  const formik: FormikProps<RegisterPostForm> = useFormik<RegisterPostForm>({
+  const formik: FormikProps<SetPostData> = useFormik<SetPostData>({
     initialValues,
     onSubmit,
     validationSchema,
@@ -212,13 +211,13 @@ export default function RegisterPost({ setOpen, open }: Props) {
                 </button>
               </form>
               <div className="mt-4">
-                {error &&
-                  Object.values(error).map((value: string) => (
+                {/* {error &&
+                  Object.values(error).map((value: any | null | undefined) => (
                     <div key={value}>
                       <span className="text-red-600">{value}</span>
                       <br />
                     </div>
-                  ))}
+                  ))} */}
               </div>
             </div>
           </Transition.Child>
