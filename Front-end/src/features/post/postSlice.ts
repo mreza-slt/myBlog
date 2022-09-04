@@ -24,7 +24,8 @@ export const registerAsyncPost: any = createAsyncThunk(
   "posts/registerAsyncPost",
   async (postData: PostDataForm, { rejectWithValue }) => {
     try {
-      const { data } = await PostService.Register(postData);
+      const response = await PostService.Register(postData);
+      const { data } = await PostService.Get(response.data);
       return data;
     } catch (error: any) {
       return rejectWithValue(error);
@@ -44,21 +45,28 @@ const postSlice = createSlice({
       return { ...state, posts: [], loading: true, error: null };
     });
     builder.addCase(getAsyncPosts.rejected, (state, action) => {
-      return { ...state, posts: [], loading: false, error: action.error };
+      return {
+        ...state,
+        posts: [],
+        loading: false,
+        error: action.payload.response.data.errors,
+      };
     });
-    // add post
+    // add new post
     builder.addCase(
       registerAsyncPost.fulfilled,
       (state, action: { payload: never }) => {
         state.posts.push(action.payload);
-        return { ...state, loading: false, error: null };
+        state.loading = false;
       }
     );
     builder.addCase(registerAsyncPost.pending, (state) => {
-      return { ...state, loading: true, error: null };
+      state.loading = true;
+      state.error = null;
     });
     builder.addCase(registerAsyncPost.rejected, (state, action) => {
-      return { ...state, loading: false, error: action.error };
+      state.loading = false;
+      state.error = action.payload.response.data.errors;
     });
   },
 });

@@ -5,7 +5,6 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SetPostData } from "../../models/interfaces/Post";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
-import { PostService } from "../../services/PostService";
 import Input from "../../common/Input";
 import Select from "../../common/Select";
 import { SubjectService } from "../../services/SubjectService";
@@ -39,15 +38,13 @@ type Props = {
 export default function RegisterPost({ setOpen, open }: Props) {
   const { error, loading } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
-  console.log(error);
 
   const [image, setImage] = useState<File | null>(null);
   const [subjects, setSubjects] = useState<SubjectForm[]>([]);
   const [childSubjects, setChildSubjects] = useState<SubjectForm[]>([]);
 
   const onSubmit = async (postData: SetPostData) => {
-    const post = dispatch(registerAsyncPost({ ...postData, image: image }));
-    dispatch(registerAsyncPost(post.data));
+    dispatch(registerAsyncPost({ ...postData, image: image }));
   };
 
   const formik: FormikProps<SetPostData> = useFormik<SetPostData>({
@@ -211,13 +208,13 @@ export default function RegisterPost({ setOpen, open }: Props) {
                 </button>
               </form>
               <div className="mt-4">
-                {/* {error &&
+                {error &&
                   Object.values(error).map((value: any | null | undefined) => (
                     <div key={value}>
                       <span className="text-red-600">{value}</span>
                       <br />
                     </div>
-                  ))} */}
+                  ))}
               </div>
             </div>
           </Transition.Child>
