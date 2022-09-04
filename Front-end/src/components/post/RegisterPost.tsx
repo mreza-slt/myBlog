@@ -7,12 +7,14 @@ import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 import Input from "../../common/Input";
 import Select from "../../common/Select";
-import { SubjectService } from "../../services/SubjectService";
-import { SubjectForm } from "../../models/interfaces/Subject";
 import classNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAsyncPost } from "../../features/post/postSlice";
 import { RootState } from "../../features/store";
+import {
+  getAsyncChildSubjects,
+  getAsyncSubjects,
+} from "../../features/subject/subjectSlice";
 
 // 1.managing states
 const initialValues: SetPostData = {
@@ -36,12 +38,15 @@ type Props = {
 };
 
 export default function RegisterPost({ setOpen, open }: Props) {
-  const { error, loading } = useSelector((state: RootState) => state.post);
+  const { error, registerLoading } = useSelector(
+    (state: RootState) => state.post
+  );
+  const { Subjects, ChildSubjects } = useSelector(
+    (state: RootState) => state.subject
+  );
   const dispatch = useDispatch();
 
   const [image, setImage] = useState<File | null>(null);
-  const [subjects, setSubjects] = useState<SubjectForm[]>([]);
-  const [childSubjects, setChildSubjects] = useState<SubjectForm[]>([]);
 
   const onSubmit = async (postData: SetPostData) => {
     dispatch(registerAsyncPost({ ...postData, image: image }));
@@ -54,35 +59,16 @@ export default function RegisterPost({ setOpen, open }: Props) {
     validateOnMount: true,
   });
 
-  const getSubjects = async (parentId: number | undefined) => {
-    const subject = await SubjectService.GetAll(parentId);
-    return subject;
-  };
-
   useEffect(() => {
-    getSubjects(0)
-      .then(({ data }) => {
-        setSubjects(data);
-      })
-      .catch((err) => {
-        // TODO
-        throw err;
-      });
-  }, []);
+    dispatch(getAsyncSubjects());
+  }, [dispatch]);
 
   const subjectId: number | null = formik.getFieldProps("subjectId").value;
   useEffect(() => {
     if (subjectId) {
-      getSubjects(subjectId)
-        .then(({ data }) => {
-          setChildSubjects(data);
-        })
-        .catch((err) => {
-          // TODO
-          throw err;
-        });
+      dispatch(getAsyncChildSubjects(subjectId));
     }
-  }, [subjectId, subjects]);
+  }, [dispatch, subjectId]);
 
   const onChange = (event: any) => {
     setImage(event.target.files[0]);
@@ -158,7 +144,7 @@ export default function RegisterPost({ setOpen, open }: Props) {
                       formik={formik}
                       name="subjectId"
                       lable="دسته بندی"
-                      subjects={subjects}
+                      subjects={Subjects}
                     />
                   </div>
                   <div className="w-1/2">
@@ -166,7 +152,7 @@ export default function RegisterPost({ setOpen, open }: Props) {
                       formik={formik}
                       name="childSubjectId"
                       lable="موضوع"
-                      subjects={childSubjects}
+                      subjects={ChildSubjects}
                     />
                   </div>
                 </div>
@@ -179,7 +165,7 @@ export default function RegisterPost({ setOpen, open }: Props) {
                   )}
                 >
                   ثبت
-                  {loading ? (
+                  {registerLoading ? (
                     <svg
                       className="inline mr-2 w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600"
                       viewBox="0 0 100 101"

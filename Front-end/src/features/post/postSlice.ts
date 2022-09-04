@@ -6,6 +6,7 @@ const initialState = {
   posts: [],
   error: null,
   loading: false,
+  registerLoading: false,
 };
 
 export const getAsyncPosts: any = createAsyncThunk(
@@ -57,15 +58,15 @@ const postSlice = createSlice({
       registerAsyncPost.fulfilled,
       (state, action: { payload: never }) => {
         state.posts.push(action.payload);
-        state.loading = false;
+        state.registerLoading = false;
       }
     );
     builder.addCase(registerAsyncPost.pending, (state) => {
-      state.loading = true;
+      state.registerLoading = true;
       state.error = null;
     });
     builder.addCase(registerAsyncPost.rejected, (state, action) => {
-      state.loading = false;
+      state.registerLoading = false;
       state.error = action.payload.response.data.errors;
     });
   },
