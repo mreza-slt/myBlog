@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Input from "../common/Input";
-import { useState } from "react";
-import { UserService } from "../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FormikProps, useFormik } from "formik";
 import { LoginUser } from "../models/interfaces/User";
+import { RootState } from "../features/store";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAsyncUser } from "../features/user/userSlice";
 
 // 1.managing states
 const initialValues: LoginUser = {
@@ -22,21 +23,17 @@ const validationSchema = Yup.object({
 });
 
 export default function Login(): JSX.Element {
-  const [error, setError] = useState<Object | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { error, loading } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const onSubmit = async (userData: LoginUser) => {
-    setLoading(true);
-    try {
-      await UserService.Login(userData);
-      setError(null);
-      history("/");
-    } catch (err: any) {
-      setError(err.response.data.errors);
-    }
-    setLoading(false);
+    await dispatch(loginAsyncUser(userData)).then((res: any) => {
+      if (!res.error) {
+        navigate("/");
+      }
+    });
   };
 
   const formik: FormikProps<LoginUser> = useFormik<LoginUser>({
@@ -141,7 +138,7 @@ export default function Login(): JSX.Element {
                 </div>
                 <div className="mt-4">
                   {error &&
-                    Object.values(error).map((value: string) => (
+                    Object.values(error).map((value: any) => (
                       <div key={value}>
                         <span className="text-red-600">{value}</span>
                         <br />
