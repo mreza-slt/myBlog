@@ -195,7 +195,7 @@ export default function RegisterPost({ setOpen, open }: Props) {
               </form>
               <div className="mt-4">
                 {error &&
-                  Object.values(error).map((value: any | null | undefined) => (
+                  Object.values(error).map((value: any) => (
                     <div key={value}>
                       <span className="text-red-600">{value}</span>
                       <br />

@@ -2,13 +2,14 @@
 import Input from "../common/Input";
 import * as Yup from "yup";
 import { useState } from "react";
-import { UserService } from "../services/UserService";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useFormik, FormikProps } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { RegisterUser } from "../models/interfaces/User";
+import { RootState } from "../features/store";
+import { useDispatch, useSelector } from "react-redux";
+import { registerAsyncUser } from "../features/user/userSlice";
 
 // 1.managing states
 const initialValues: RegisterUser = {
@@ -60,29 +61,23 @@ const validationSchema = Yup.object({
 });
 
 export default function Register(): JSX.Element {
-  const [error, setError] = useState<Object | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [title, setTitle] = useState<boolean>(false);
+  const { error, loading } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
-  const history = useNavigate();
+  const [title, setTitle] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   async function onSubmit(userData: RegisterUser): Promise<void> {
-    setLoading(true);
-    try {
-      await UserService.Register({
+    await dispatch(
+      registerAsyncUser({
         ...userData,
         title: title ? "خانم" : "آقای",
-      });
-      await UserService.Login({
-        userNameEmailPhone: userData.phoneNumber,
-        password: userData.password,
-      });
-      setError(null);
-      history("/");
-    } catch (err: any) {
-      setError(err.response.data.errors);
-    }
-    setLoading(false);
+      })
+    ).then((res: any) => {
+      if (!res.error) {
+        navigate("/");
+      }
+    });
   }
   const formik: FormikProps<RegisterUser> = useFormik<RegisterUser>({
     initialValues,
@@ -213,7 +208,7 @@ export default function Register(): JSX.Element {
                 </div>
                 <div className="mt-4">
                   {error &&
-                    Object.values(error).map((value: string) => (
+                    Object.values(error).map((value: any) => (
                       <div key={value}>
                         <span className="text-red-600">{value}</span>
                         <br />
