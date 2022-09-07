@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import Input from "../common/Input";
+import Input from "../../common/Input";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FormikProps, useFormik } from "formik";
-import { LoginUser } from "../models/interfaces/User";
-import { RootState } from "../features/store";
+import { LoginUser } from "../../models/interfaces/User";
+import { RootState } from "../../features/store";
 import { useDispatch, useSelector } from "react-redux";
-import { loginAsyncUser } from "../features/user/userSlice";
+import { loginAsyncUser } from "../../features/user/userSlice";
+import Error from "../../common/Error";
 
 // 1.managing states
 const initialValues: LoginUser = {
@@ -22,7 +23,7 @@ const validationSchema = Yup.object({
     .required("رمز عبور را وارد کنید"),
 });
 
-export default function Login(): JSX.Element {
+export default function LoginForm(): JSX.Element {
   const { error, loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
@@ -30,9 +31,9 @@ export default function Login(): JSX.Element {
 
   const onSubmit = async (userData: LoginUser) => {
     await dispatch(loginAsyncUser(userData)).then((res: any) => {
-      if (!res.error) {
-        navigate("/");
-      }
+      // if (!res.error) {
+      //   navigate("/");
+      // }
     });
   };
 
@@ -51,7 +52,7 @@ export default function Login(): JSX.Element {
             <h1 className="text-2xl text-center font-extrabold">وبلاگ</h1>
             <p className="mt-2 text-sm text-gray">
               <Link
-                to="/register"
+                to="/signup"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 ثبت نام
@@ -69,14 +70,13 @@ export default function Login(): JSX.Element {
                     lable="نام کاربری"
                   />
                 </div>
-                <div className="space-y-1">
-                  <Input
-                    formik={formik}
-                    name="password"
-                    lable="رمز عیور"
-                    type="password"
-                  />
-                </div>
+
+                <Input
+                  formik={formik}
+                  name="password"
+                  lable="رمز عیور"
+                  type="password"
+                />
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -136,15 +136,8 @@ export default function Login(): JSX.Element {
                     )}
                   </button>
                 </div>
-                <div className="mt-4">
-                  {error &&
-                    Object.values(error).map((value: any) => (
-                      <div key={value}>
-                        <span className="text-red-600">{value}</span>
-                        <br />
-                      </div>
-                    ))}
-                </div>
+
+                <Error error={error} />
               </form>
             </div>
           </div>

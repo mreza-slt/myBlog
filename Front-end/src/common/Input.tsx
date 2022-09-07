@@ -2,6 +2,7 @@ type InputValue = {
   name: string;
   lable: string;
   type?: string;
+  labelClass?: string | null;
   formik: any;
 };
 
@@ -9,14 +10,17 @@ export default function Input({
   name,
   lable,
   type = "text",
+  labelClass = null,
   formik,
 }: InputValue): JSX.Element {
   return (
-    <div className="mt-4">
+    <div className="mt-4 space-y-1">
       <label
         htmlFor={name}
-        className={` block text-sm font-medium text-gray-700 ${
-          formik.errors[name] && formik.touched[name] ? "text-red-600" : ""
+        className={`block text-sm font-medium  ${labelClass && labelClass} ${
+          formik.errors[name] && formik.touched[name]
+            ? "text-red-600"
+            : "text-gray-700"
         }`}
       >
         {formik.errors[name] && formik.touched[name]

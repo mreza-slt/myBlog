@@ -1,18 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import Input from "../common/Input";
+import Input from "../../common/Input";
 import * as Yup from "yup";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik, FormikProps } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
-import { RegisterUser } from "../models/interfaces/User";
-import { RootState } from "../features/store";
+import { SignupUser } from "../../models/interfaces/User";
+import { RootState } from "../../features/store";
 import { useDispatch, useSelector } from "react-redux";
-import { registerAsyncUser } from "../features/user/userSlice";
+import { registerAsyncUser } from "../../features/user/userSlice";
+import Error from "../../common/Error";
 
 // 1.managing states
-const initialValues: RegisterUser = {
+const initialValues: SignupUser = {
   title: "",
   name: "",
   surname: "",
@@ -60,14 +61,14 @@ const validationSchema = Yup.object({
     .required("تکرار رمز عبور را وارد کنید"),
 });
 
-export default function Register(): JSX.Element {
+export default function SignupForm(): JSX.Element {
   const { error, loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  async function onSubmit(userData: RegisterUser): Promise<void> {
+  async function onSubmit(userData: SignupUser): Promise<void> {
     await dispatch(
       registerAsyncUser({
         ...userData,
@@ -79,7 +80,7 @@ export default function Register(): JSX.Element {
       }
     });
   }
-  const formik: FormikProps<RegisterUser> = useFormik<RegisterUser>({
+  const formik: FormikProps<SignupUser> = useFormik<SignupUser>({
     initialValues,
     onSubmit,
     validationSchema,
@@ -112,10 +113,10 @@ export default function Register(): JSX.Element {
               >
                 <Input formik={formik} name="userName" lable="نام کاربری" />
                 {/* select title */}
-                <div role="button" className="flex items-center">
+                <div className="flex items-center">
                   <div
                     onClick={() => setTitle(!title)}
-                    className="flex mt-10 border rounded-[3px] p-2 sm:p-[6px]"
+                    className="flex mt-10 border rounded-[3px] p-2 sm:p-[6px] cursor-pointer"
                   >
                     <div className="flex flex-col">
                       <FontAwesomeIcon icon={faAngleUp} size="xs" />
@@ -124,7 +125,12 @@ export default function Register(): JSX.Element {
                     <span className="mr-1">{title ? "خانم" : "آقای"}</span>
                   </div>
                   <div className="w-full">
-                    <Input formik={formik} name="name" lable="نام" />
+                    <Input
+                      labelClass="mr-[-3.4rem]"
+                      formik={formik}
+                      name="name"
+                      lable="نام"
+                    />
                   </div>
                 </div>
                 <Input formik={formik} name="email" lable="ایمیل" />
@@ -206,15 +212,8 @@ export default function Register(): JSX.Element {
                     )}
                   </button>
                 </div>
-                <div className="mt-4">
-                  {error &&
-                    Object.values(error).map((value: any) => (
-                      <div key={value}>
-                        <span className="text-red-600">{value}</span>
-                        <br />
-                      </div>
-                    ))}
-                </div>
+
+                <Error error={error} />
               </form>
             </div>
           </div>

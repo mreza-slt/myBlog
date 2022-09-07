@@ -1,8 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { LoginUser, RegisterUser } from "../../models/interfaces/User";
+import {
+  LoginUser,
+  SignupUser,
+  UserProfile,
+} from "../../models/interfaces/User";
 import { UserService } from "../../services/UserService";
 
-const initialState = {
+const initialState: {
+  user: UserProfile | null;
+  error: {} | null;
+  loading: boolean;
+} = {
   user: null,
   error: null,
   loading: false,
@@ -10,13 +18,27 @@ const initialState = {
 
 export const registerAsyncUser: any = createAsyncThunk(
   "User/registerAsyncUser",
-  async (userData: RegisterUser, { rejectWithValue }) => {
+  async (userData: SignupUser, { rejectWithValue }) => {
     try {
       await UserService.Register(userData);
-      await UserService.Login({
+      loginAsyncUser({
         userNameEmailPhone: userData.phoneNumber,
         password: userData.password,
       });
+      return userData;
+    } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const editProfileAsyncUser: any = createAsyncThunk(
+  "User/editProfileAsyncUser",
+  async (userData: UserProfile, { rejectWithValue }) => {
+    try {
+      await UserService.EditProfile(userData);
+      localStorage.removeItem("stateUser");
+      localStorage.setItem("stateUser", JSON.stringify(userData));
       return userData;
     } catch (error: any) {
       return rejectWithValue(error);
@@ -28,11 +50,12 @@ export const loginAsyncUser: any = createAsyncThunk(
   "User/loginAsyncUser",
   async (userData: LoginUser, { rejectWithValue }) => {
     try {
-      await UserService.Login({
+      const { data } = await UserService.Login({
         userNameEmailPhone: userData.userNameEmailPhone,
         password: userData.password,
       });
-      return userData;
+      localStorage.setItem("stateUser", JSON.stringify(data));
+      return data;
     } catch (error: any) {
       return rejectWithValue(error);
     }
@@ -57,6 +80,27 @@ const UserSlice = createSlice({
       return { ...state, user: null, loading: true, error: null };
     });
     builder.addCase(registerAsyncUser.rejected, (state, action) => {
+      return {
+        ...state,
+        user: null,
+        loading: false,
+        error: action.payload.response.data.errors,
+      };
+    });
+
+    // update user profile
+    builder.addCase(editProfileAsyncUser.fulfilled, (state, action) => {
+      return {
+        ...state,
+        user: action.payload,
+        loading: false,
+        error: null,
+      };
+    });
+    builder.addCase(editProfileAsyncUser.pending, (state) => {
+      return { ...state, user: null, loading: true, error: null };
+    });
+    builder.addCase(editProfileAsyncUser.rejected, (state, action) => {
       return {
         ...state,
         user: null,

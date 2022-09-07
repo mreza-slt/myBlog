@@ -5,10 +5,12 @@ type Childs = {
 };
 export default function Layout({ children }: Childs) {
   return (
-    <>
+    <div className="bg-slate-100">
       <Navigation />
-      {children}
+      <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
+        {children}
+      </div>
       <Footer />
-    </>
+    </div>
   );
 }
