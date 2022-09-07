@@ -78,10 +78,9 @@ namespace MyBlog.Services
             }
 
             // Check format and fix size Image
-            string? image;
             try
             {
-                image = this.ImageService.FixImageSize(postModel.Image, 900);
+               this.ImageService.FixImageSize(postModel.Image, 900);
             }
             catch (ArgumentException)
             {
@@ -92,7 +91,7 @@ namespace MyBlog.Services
                 throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Image), HttpStatusCode.BadRequest);
             }
 
-            Post post = new(postModel.Title, postModel.Text, image, userId, childSubjectId.Id);
+            Post post = new(postModel.Title, postModel.Text, postModel.Image, userId, childSubjectId.Id);
             await this.DbContext.AddAsync(post);
             await this.DbContext.SaveChangesAsync();
 

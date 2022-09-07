@@ -26,7 +26,7 @@ namespace MyBlog.Controllers
         /// ورود به حساب کاربری
         /// </summary>
         /// <param name="userModel">اطلاعات ورود کاربر</param>
-        /// <returns>A <see cref="ResponseMessageViewModel"/> : return Success Or Error Response</returns>
+        /// <returns>A <see cref="ProfileUserViewModel"/> : return user info</returns>
         /// <remarks>
         /// برای ورود به حساب کاربری از این متد استفاده می شود
         /// </remarks>
@@ -35,7 +35,7 @@ namespace MyBlog.Controllers
         /// <response code="404 NotFound">در صورتی که هیچ کاربری با نام کاربری یا ایمیل یا شماره تلفن پیدا نشود</response>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ResponseMessageViewModel> Login([FromBody] LoginViewModel userModel)
+        public async Task<ProfileUserViewModel> Login([FromBody] LoginViewModel userModel)
         {
             return await this.UserService.Login(userModel);
         }
@@ -68,7 +68,7 @@ namespace MyBlog.Controllers
         /// <response code="400 BadRequest">در صورتی که مقادیر ورودی نامعتبر باشد</response>
         /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
         [HttpPut]
-        public async Task<ResponseMessageViewModel> Profile([FromForm] ProfileUserViewModel userModel)
+        public async Task<ResponseMessageViewModel> Profile([FromBody] ProfileUserViewModel userModel)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 

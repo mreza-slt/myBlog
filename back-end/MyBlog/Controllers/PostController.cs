@@ -64,7 +64,7 @@ namespace MyBlog.Controllers
         /// <response code="406 NotAcceptable">در صورتی که درخواست ارسالی قابل قبول نباشد</response>
         /// <response code="409 Conflict">در صورتی که مقادیر ورودی تکراری باشد</response>
         [HttpPost]
-        public async Task<long> Register([FromForm] PostViewModel postModel)
+        public async Task<long> Register([FromBody] PostViewModel postModel)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 

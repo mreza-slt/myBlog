@@ -138,10 +138,9 @@ namespace MyBlog.Services
             }
 
             // Check format and fix size Image
-            string? avatar;
             try
             {
-                avatar = this.ImageService.FixImageSize(userModel.Avatar, 300);
+                this.ImageService.FixImageSize(userModel.Avatar, 300);
             }
             catch (ArgumentException)
             {
@@ -153,7 +152,7 @@ namespace MyBlog.Services
             }
 
             // Update user with Internal in model
-            User.Copy(userModel, avatar, user);
+            User.Copy(userModel, user);
 
             IdentityResult result = await this.userManager.UpdateAsync(user);
             foreach (var error in result.Errors)
@@ -173,7 +172,7 @@ namespace MyBlog.Services
             return new ResponseMessageViewModel(null, "اطلاعات با موفقیت ویرایش شد");
         }
 
-        public async Task<ResponseMessageViewModel> Login(LoginViewModel userModel)
+        public async Task<ProfileUserViewModel> Login(LoginViewModel userModel)
         {
             User? user = this.FindByUserNameOrEmailOrPhoneNumber(userModel.UserNameEmailPhone);
 
@@ -235,7 +234,7 @@ namespace MyBlog.Services
 
             await this.signInManager.SignInAsync(user, true);
 
-            return new ResponseMessageViewModel(null, "شما به حساب کاربری خود با موفقیت وارد شدید");
+            return new ProfileUserViewModel() { UserName = user.UserName, Name = user.Name, Surname = user.Surname, Email = user.Email, PhoneNumber = user.PhoneNumber, Title = user.Title, Avatar = user.Avatar };
         }
 
         public async Task<ResponseMessageViewModel> Logout()
