@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import Error from "../../common/Error";
 import Input from "../../common/Input";
+import Loading from "../../common/Loading";
 import { RootState } from "../../features/store";
 import { editProfileAsyncUser } from "../../features/user/userSlice";
 import { UserProfile } from "../../models/interfaces/User";
@@ -46,7 +47,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
   );
   const [image, setImage] = useState<string>(user.avatar);
 
-  const { error } = useSelector((state: RootState) => state.user);
+  const { error, loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   // 1.managing states
@@ -161,9 +162,10 @@ export default function EditProfileForm({ setOpen, user }: Props) {
           <div className="w-1/2">
             <button
               type="submit"
-              className="w-full items-center transition-all duration-300 text-indigo-700 hover:text-white border border-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-indigo-500 dark:text-indigo-500 dark:hover:text-white dark:hover:bg-indigo-600 dark:focus:ring-indigo-900"
+              className="flex justify-center w-full items-center transition-all duration-300 text-indigo-700 hover:text-white border border-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-indigo-500 dark:text-indigo-500 dark:hover:text-white dark:hover:bg-indigo-600 dark:focus:ring-indigo-900"
             >
-              ویرایش
+              <span>ویرایش</span>
+              <Loading loading={loading} sizeClass="w-6 h-6" />
             </button>
           </div>
         </div>
