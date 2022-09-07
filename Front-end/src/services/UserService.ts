@@ -13,4 +13,8 @@ export class UserService {
   public static EditProfile(data: UserProfile) {
     return http.put("user/profile", data);
   }
+
+  public static Logout() {
+    return http.get("user/logout");
+  }
 }

@@ -6,21 +6,31 @@ import classNames from "classnames";
 import { Link } from "react-router-dom";
 import RegisterPostForm from "../post/RegisterPostForm";
 import DialogComponent from "../../common/Dialog";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { UserProfile } from "../../models/interfaces/User";
+import { UserService } from "../../services/UserService";
+import { logoutAsyncUser } from "../../features/user/userSlice";
 
 const navigation = [
   { name: "خانه", href: "#", current: true },
   { name: "درباره ما", href: "#", current: false },
   { name: "تماس با ما", href: "#", current: false },
 ];
-const userNavigation: { name: string; to: string }[] = [
-  { name: "حساب کاربری", to: "/user/Profile" },
-  { name: "خروج", to: "/" },
-];
 
 export default function Navigation() {
+  const dispatch = useDispatch();
+
+  const userNavigation: { name: string; to: string; onClick: any }[] = [
+    { name: "حساب کاربری", to: "/user/Profile", onClick: "" },
+    {
+      name: "خروج",
+      to: "/",
+      onClick: () => {
+        dispatch(logoutAsyncUser());
+      },
+    },
+  ];
   const user: UserProfile =
     useSelector((state: RootState) => state.user.user) ||
     JSON.parse(localStorage.getItem("stateUser")!);
@@ -102,44 +112,73 @@ export default function Navigation() {
                   </div>
                   <div className="hidden md:mr-4 md:flex-shrink-0 md:flex md:items-center">
                     {/* Profile dropdown */}
-                    <Menu as="div" className="mr-3 relative">
-                      <div>
-                        <Menu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src={user.avatar}
-                            alt=""
-                          />
-                        </Menu.Button>
-                      </div>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
+                    {user ? (
+                      <Menu as="div" className="mr-3 relative">
+                        <div>
+                          <Menu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
+                            <img
+                              className="h-10 w-10 rounded-full"
+                              src={user.avatar}
+                              alt=""
+                            />
+                          </Menu.Button>
+                        </div>
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-200"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <Menu.Items className="origin-top-left absolute left-0 mt-2 w-36 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            {userNavigation.map((item) => (
+                              <Menu.Item key={item.name}>
+                                {({ active }) => (
+                                  <Link
+                                    onClick={item.onClick}
+                                    to={item.to}
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    {item.name}
+                                  </Link>
+                                )}
+                              </Menu.Item>
+                            ))}
+                          </Menu.Items>
+                        </Transition>
+                      </Menu>
+                    ) : (
+                      <Link
+                        to="user/login"
+                        className="flex justify-between items-center"
                       >
-                        <Menu.Items className="origin-top-left absolute left-0 mt-2 w-36 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          {userNavigation.map((item) => (
-                            <Menu.Item key={item.name}>
-                              {({ active }) => (
-                                <Link
-                                  to={item.to}
-                                  className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "block px-4 py-2 text-sm text-gray-700"
-                                  )}
-                                >
-                                  {item.name}
-                                </Link>
-                              )}
-                            </Menu.Item>
-                          ))}
-                        </Menu.Items>
-                      </Transition>
-                    </Menu>
+                        <div className="flex items-center justify-center text-indigo-600 rounded-full w-12 h-12 hover:bg-indigo-50">
+                          <svg
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-width="0"
+                            viewBox="0 0 24 24"
+                            height="24"
+                            width="24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              strokeWidth="2"
+                              d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                            ></path>
+                          </svg>
+                        </div>
+
+                        <span>ورود</span>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -163,7 +202,7 @@ export default function Navigation() {
                   </Link>
                 ))}
               </div>
-              <div className="pt-4 pb-3 border-t border-gray-700">
+              {/* <div className="pt-4 pb-3 border-t border-gray-700">
                 <div className="flex items-center px-5 sm:px-6">
                   <div className="flex-shrink-0">
                     <img
@@ -198,7 +237,7 @@ export default function Navigation() {
                     </Link>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </Disclosure.Panel>
           </>
         )}

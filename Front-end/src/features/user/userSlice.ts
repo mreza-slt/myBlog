@@ -62,6 +62,18 @@ export const loginAsyncUser: any = createAsyncThunk(
   }
 );
 
+export const logoutAsyncUser: any = createAsyncThunk(
+  "User/logoutAsyncUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      await UserService.Logout();
+      localStorage.removeItem("stateUser");
+    } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const UserSlice = createSlice({
   name: "User",
   initialState,
@@ -122,6 +134,24 @@ const UserSlice = createSlice({
       return { ...state, user: null, loading: true, error: null };
     });
     builder.addCase(loginAsyncUser.rejected, (state, action) => {
+      return {
+        ...state,
+        user: null,
+        loading: false,
+        error: action.payload.response.data.errors,
+      };
+    });
+
+    // logout user
+    builder.addCase(logoutAsyncUser.fulfilled, (state) => {
+      return {
+        ...state,
+        user: null,
+        loading: false,
+        error: null,
+      };
+    });
+    builder.addCase(logoutAsyncUser.rejected, (state, action) => {
       return {
         ...state,
         user: null,
