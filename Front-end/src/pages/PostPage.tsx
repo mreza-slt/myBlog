@@ -1,12 +1,13 @@
-import { Route, Routes } from "react-router-dom";
+import { AuthRoute } from "../components/auth/AuthRoute";
 import GetAllPost from "../components/post/GetAllPost";
 import PostInfo from "../components/post/PostInfo";
+import { NonAuthRoutes } from "../models/enums/AuthRoutes";
 
 export default function PostPage(): JSX.Element {
   return (
-    <Routes>
-      <Route path="/*" element={<GetAllPost />} />
-      <Route path=":id" element={<PostInfo />} />
-    </Routes>
+    <>
+      <AuthRoute path={NonAuthRoutes.posts} Component={GetAllPost} />
+      <AuthRoute path={NonAuthRoutes.postInfo} Component={PostInfo} />
+    </>
   );
 }

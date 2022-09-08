@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Input from "../../common/Input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FormikProps, useFormik } from "formik";
 import { LoginUser } from "../../models/interfaces/User";
@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginAsyncUser } from "../../features/user/userSlice";
 import Error from "../../common/Error";
 import Loading from "../../common/Loading";
+import { AuthRoutes, NonAuthRoutes } from "../../models/enums/AuthRoutes";
+import { AuthState } from "../../models/interfaces/Auth";
 
 // 1.managing states
 const initialValues: LoginUser = {
@@ -29,12 +31,14 @@ export default function LoginForm(): JSX.Element {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const user = location.state as AuthState;
 
   const onSubmit = async (userData: LoginUser) => {
     await dispatch(loginAsyncUser(userData)).then((res: any) => {
-      // if (!res.error) {
-      //   navigate("/");
-      // }
+      if (!res.error) {
+        navigate(user?.requestedPath ?? NonAuthRoutes.posts);
+      }
     });
   };
 
