@@ -27,7 +27,7 @@ namespace MyBlog.Controllers
         /// برای اضافه کردن موضوعات پیشفرض از این متد استفاده می شود
         /// </remarks>
         [HttpPost]
-        public async Task<ResponseMessageViewModel> AddDefaultAccountType()
+        public async Task<ResponseMessageViewModel> AddDefaultSubjectType()
         {
             return await this.SubjectService.AddDefaultSubject();
         }
