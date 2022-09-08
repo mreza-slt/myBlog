@@ -74,7 +74,7 @@ export default function RegisterPostForm({ setOpen }: Props) {
 
   return (
     <>
-      <h1 className="text-center block font-bold tracking-tight text-indigo-500 sm:text-2xl">
+      <h1 className="text-center block font-bold tracking-tight text-violet-500 sm:text-2xl">
         ایجاد پست جدید
       </h1>
       <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -96,7 +96,7 @@ export default function RegisterPostForm({ setOpen }: Props) {
             id="image"
             name="image"
             type="file"
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
             onChange={onChange}
           />
         </div>
@@ -123,7 +123,7 @@ export default function RegisterPostForm({ setOpen }: Props) {
           type="submit"
           className={classNames(
             { "opacity-70": !formik.isValid },
-            "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
           )}
         >
           ثبت
@@ -132,7 +132,7 @@ export default function RegisterPostForm({ setOpen }: Props) {
         <button
           onClick={() => setOpen(false)}
           type="button"
-          className="inline-flex items-center mr-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center mr-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
         >
           انصراف
         </button>

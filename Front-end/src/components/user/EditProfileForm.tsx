@@ -106,7 +106,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
         <div className="flex text-sm  text-gray-600">
           <label
             htmlFor="file-upload"
-            className="relative cursor-pointer p-1 rounded-md font-medium text-indigo-600 hover:bg-white hover:text-red-500 focus-within:outline-none focus-within:ring-2"
+            className="relative cursor-pointer p-1 rounded-md font-medium text-violet-600 hover:bg-white hover:text-red-500 focus-within:outline-none focus-within:ring-2"
           >
             <span>انتخاب عکس</span>
             <input
@@ -125,7 +125,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
         <div className="flex items-center">
           <div
             onClick={() => setTitle(!title)}
-            className="flex mt-10 border rounded-[3px] p-2 sm:p-[6px]  cursor-pointer"
+            className="flex mt-8 sm:mt-10 border rounded-[3px] p-2 sm:p-[6px]  cursor-pointer"
           >
             <div className="flex flex-col">
               <FontAwesomeIcon icon={faAngleUp} size="xs" />
@@ -153,6 +153,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
         <div className="pt-6 flex gap-1 items-center">
           <div className="w-1/2">
             <button
+              type="button"
               onClick={() => setOpen(false)}
               className="w-full items-center transition-all duration-300 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
             >
@@ -162,7 +163,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
           <div className="w-1/2">
             <button
               type="submit"
-              className="flex justify-center w-full items-center transition-all duration-300 text-indigo-700 hover:text-white border border-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-indigo-500 dark:text-indigo-500 dark:hover:text-white dark:hover:bg-indigo-600 dark:focus:ring-indigo-900"
+              className="flex justify-center w-full items-center transition-all duration-300 text-violet-700 hover:text-white border border-violet-700 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-violet-500 dark:text-violet-500 dark:hover:text-white dark:hover:bg-violet-600 dark:focus:ring-violet-900"
             >
               <span>ویرایش</span>
               <Loading loading={loading} sizeClass="w-6 h-6" />

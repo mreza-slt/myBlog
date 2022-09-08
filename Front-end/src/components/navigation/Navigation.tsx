@@ -9,7 +9,6 @@ import DialogComponent from "../../common/Dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { UserProfile } from "../../models/interfaces/User";
-import { UserService } from "../../services/UserService";
 import { logoutAsyncUser } from "../../features/user/userSlice";
 
 const navigation = [
@@ -21,19 +20,13 @@ const navigation = [
 export default function Navigation() {
   const dispatch = useDispatch();
 
-  const userNavigation: { name: string; to: string; onClick: any }[] = [
-    { name: "حساب کاربری", to: "/user/Profile", onClick: "" },
-    {
-      name: "خروج",
-      to: "/",
-      onClick: () => {
-        dispatch(logoutAsyncUser());
-      },
-    },
-  ];
-  const user: UserProfile =
-    useSelector((state: RootState) => state.user.user) ||
-    JSON.parse(localStorage.getItem("stateUser")!);
+  const user: UserProfile | null = useSelector(
+    (state: RootState) => state.user.user
+  );
+
+  const handlerLogout = () => {
+    dispatch(logoutAsyncUser());
+  };
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -42,15 +35,12 @@ export default function Navigation() {
       <Disclosure as="nav" className="bg-white fixed top-0 z-50 w-full">
         {({ open }) => (
           <>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
               <div className="flex justify-between h-16">
                 <div className="flex">
-                  <div className="mr-2 flex items-center md:hidden">
+                  <div className="flex items-center md:hidden">
                     {/* Mobile menu button */}
-                    <Link
-                      to="/"
-                      className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                    >
+                    <Disclosure.Button className="ml-3 w-9 h-9 inline-flex items-center justify-center rounded-md text-violet-600 hover:text-white hover:bg-violet-300">
                       {open ? (
                         <FontAwesomeIcon
                           icon={faXmark}
@@ -64,7 +54,7 @@ export default function Navigation() {
                           aria-hidden="true"
                         />
                       )}
-                    </Link>
+                    </Disclosure.Button>
                   </div>
                   <div className="flex-shrink-0 flex items-center w-auto">
                     <svg
@@ -105,12 +95,12 @@ export default function Navigation() {
                     <button
                       onClick={() => setOpen(true)}
                       type="button"
-                      className="items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 focus:ring-indigo-500"
+                      className="items-center px-2 sm:px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 focus:ring-violet-500"
                     >
                       <span>پست جدید</span>
                     </button>
                   </div>
-                  <div className="hidden md:mr-4 md:flex-shrink-0 md:flex md:items-center">
+                  <div className="md:mr-4 flex-shrink-0 flex items-center">
                     {/* Profile dropdown */}
                     {user ? (
                       <Menu as="div" className="mr-3 relative">
@@ -132,23 +122,44 @@ export default function Navigation() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="origin-top-left absolute left-0 mt-2 w-36 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            {userNavigation.map((item) => (
-                              <Menu.Item key={item.name}>
-                                {({ active }) => (
-                                  <Link
-                                    onClick={item.onClick}
-                                    to={item.to}
-                                    className={classNames(
-                                      active ? "bg-gray-100" : "",
-                                      "block px-4 py-2 text-sm text-gray-700"
-                                    )}
-                                  >
-                                    {item.name}
-                                  </Link>
-                                )}
-                              </Menu.Item>
-                            ))}
+                          <Menu.Items className="origin-top-left absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  to="/user/profile"
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "flex justify-between items-center px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  <div>
+                                    <img
+                                      className="h-10 w-10 rounded-full"
+                                      src={user.avatar}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div>
+                                    <p>{user.name}</p>
+                                    <p>{user.phoneNumber}</p>
+                                  </div>
+                                </Link>
+                              )}
+                            </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  onClick={() => handlerLogout}
+                                  to="user/logout"
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  خروج
+                                </Link>
+                              )}
+                            </Menu.Item>
                           </Menu.Items>
                         </Transition>
                       </Menu>
@@ -157,7 +168,7 @@ export default function Navigation() {
                         to="user/login"
                         className="flex justify-between items-center"
                       >
-                        <div className="flex items-center justify-center text-indigo-600 rounded-full w-12 h-12 hover:bg-indigo-50">
+                        <div className="flex items-center justify-center text-violet-600 rounded-full w-12 h-12 hover:bg-violet-50">
                           <svg
                             stroke="currentColor"
                             fill="none"
@@ -202,42 +213,6 @@ export default function Navigation() {
                   </Link>
                 ))}
               </div>
-              {/* <div className="pt-4 pb-3 border-t border-gray-700">
-                <div className="flex items-center px-5 sm:px-6">
-                  <div className="flex-shrink-0">
-                    <img
-                      className="h-10 w-10 rounded-full"
-                      src={user.avatar}
-                      alt=""
-                    />
-                  </div>
-                  <div className="mr-3">
-                    <div className="text-base font-medium text-white">
-                      {user.name}
-                    </div>
-                    <div className="text-sm font-medium text-gray-400">
-                      {user.email}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="mr-auto flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                  >
-                    <span className="sr-only">View notifications</span>
-                  </button>
-                </div>
-                <div className="mt-3 px-2 space-y-1 sm:px-3">
-                  {userNavigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to="/"
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div> */}
             </Disclosure.Panel>
           </>
         )}
