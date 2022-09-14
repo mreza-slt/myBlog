@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 import {
   LoginUser,
   SignupUser,
@@ -7,10 +8,12 @@ import {
 import { UserService } from "../../services/UserService";
 
 const initialState: {
+  token: string | null;
   user: UserProfile | null;
   error: {} | null;
   loading: boolean;
 } = {
+  token: Cookies.get("MyBlog") || null,
   user: null,
   error: null,
   loading: false,
@@ -21,11 +24,14 @@ export const registerAsyncUser: any = createAsyncThunk(
   async (userData: SignupUser, { rejectWithValue }) => {
     try {
       await UserService.Register(userData);
-      loginAsyncUser({
+
+      const { data } = await UserService.Login({
         userNameEmailPhone: userData.phoneNumber,
         password: userData.password,
       });
-      return userData;
+      localStorage.setItem("stateUser", JSON.stringify(data));
+
+      return { userData: userData, token: Cookies.get("MyBlog") };
     } catch (error: any) {
       return rejectWithValue(error);
     }
@@ -55,7 +61,8 @@ export const loginAsyncUser: any = createAsyncThunk(
         password: userData.password,
       });
       localStorage.setItem("stateUser", JSON.stringify(data));
-      return data;
+
+      return { userData: data, token: Cookies.get("MyBlog") };
     } catch (error: any) {
       return rejectWithValue(error);
     }
@@ -83,7 +90,8 @@ const UserSlice = createSlice({
     builder.addCase(registerAsyncUser.fulfilled, (state, action) => {
       return {
         ...state,
-        user: action.payload,
+        token: action.payload.token,
+        user: action.payload.userData,
         loading: false,
         error: null,
       };
@@ -125,7 +133,8 @@ const UserSlice = createSlice({
     builder.addCase(loginAsyncUser.fulfilled, (state, action) => {
       return {
         ...state,
-        user: action.payload,
+        token: action.payload.token,
+        user: action.payload.userData,
         loading: false,
         error: null,
       };

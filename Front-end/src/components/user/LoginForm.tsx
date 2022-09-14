@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginAsyncUser } from "../../features/user/userSlice";
 import Error from "../../common/Error";
 import Loading from "../../common/Loading";
+import { useQuery } from "../../hooks/useQuery";
+import { useEffect } from "react";
 
 // 1.managing states
 const initialValues: LoginUser = {
@@ -25,16 +27,30 @@ const validationSchema = Yup.object({
 });
 
 export default function LoginForm(): JSX.Element {
-  const { error, loading } = useSelector((state: RootState) => state.user);
+  const { token, error, loading } = useSelector(
+    (state: RootState) => state.user
+  );
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  const query = useQuery();
+  const redirect = query.get("redirect") || "/";
+
+  useEffect(() => {
+    if (token) {
+      console.log(redirect);
+
+      redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
+    }
+  }, [navigate, redirect, token]);
 
   const onSubmit = async (userData: LoginUser) => {
     await dispatch(loginAsyncUser(userData)).then((res: any) => {
-      // if (!res.error) {
-      //   navigate("/");
-      // }
+      if (!res.error) {
+        console.log(redirect);
+
+        redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
+      }
     });
   };
 
@@ -53,7 +69,7 @@ export default function LoginForm(): JSX.Element {
             <h1 className="text-2xl text-center font-extrabold">وبلاگ</h1>
             <p className="mt-2 text-sm text-gray">
               <Link
-                to="/user/signup"
+                to={`/user/signup?redirect=${redirect}`}
                 className="font-medium text-violet-600 hover:text-violet-500"
               >
                 ثبت نام

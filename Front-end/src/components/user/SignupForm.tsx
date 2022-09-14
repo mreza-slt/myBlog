@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Input from "../../common/Input";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik, FormikProps } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerAsyncUser } from "../../features/user/userSlice";
 import Error from "../../common/Error";
 import Loading from "../../common/Loading";
+import { useQuery } from "../../hooks/useQuery";
 
 // 1.managing states
 const initialValues: SignupUser = {
@@ -63,11 +64,21 @@ const validationSchema = Yup.object({
 });
 
 export default function SignupForm(): JSX.Element {
-  const { error, loading } = useSelector((state: RootState) => state.user);
+  const { token, error, loading } = useSelector(
+    (state: RootState) => state.user
+  );
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState<boolean>(false);
   const navigate = useNavigate();
+  const query = useQuery();
+  const redirect = query.get("redirect") || "/";
+
+  useEffect(() => {
+    if (token) {
+      redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
+    }
+  }, [navigate, redirect, token]);
 
   async function onSubmit(userData: SignupUser): Promise<void> {
     await dispatch(
@@ -77,7 +88,7 @@ export default function SignupForm(): JSX.Element {
       })
     ).then((res: any) => {
       if (!res.error) {
-        navigate("/");
+        redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
       }
     });
   }

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import DialogComponent from "../../common/Dialog";
 import EditProfileForm from "../../components/user/EditProfileForm";
 import { RootState } from "../../features/store";
@@ -8,9 +9,18 @@ import { UserProfile } from "../../models/interfaces/User";
 export default function ProfilePage() {
   const [open, setOpen] = useState<boolean>(false);
 
+  const { token } = useSelector((state: RootState) => state.user);
   const user: UserProfile =
     useSelector((state: RootState) => state.user.user) ||
     JSON.parse(localStorage.getItem("stateUser")!);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/user/login?redirect=user/profile");
+    }
+  }, [navigate, token]);
 
   return (
     <div className="bg-slate-100">
