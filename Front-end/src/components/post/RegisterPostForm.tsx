@@ -4,7 +4,6 @@ import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 import Input from "../../common/Input";
 import Select from "../../common/Select";
-import classNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAsyncPost } from "../../features/post/postSlice";
 import { RootState } from "../../features/store";

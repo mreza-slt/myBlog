@@ -1,4 +1,3 @@
-import { text } from "stream/consumers";
 import Button from "../../common/Button";
 
 const navigation = {
