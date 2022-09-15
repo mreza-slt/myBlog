@@ -38,8 +38,6 @@ export default function LoginForm(): JSX.Element {
 
   useEffect(() => {
     if (token) {
-      console.log(redirect);
-
       redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
     }
   }, [navigate, redirect, token]);
@@ -47,8 +45,6 @@ export default function LoginForm(): JSX.Element {
   const onSubmit = async (userData: LoginUser) => {
     await dispatch(loginAsyncUser(userData)).then((res: any) => {
       if (!res.error) {
-        console.log(redirect);
-
         redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
       }
     });

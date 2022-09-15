@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { UserProfile } from "../../models/interfaces/User";
 import { logoutAsyncUser } from "../../features/user/userSlice";
+import Cookies from "js-cookie";
 
 const navigation = [
   { name: "خانه", href: "#", current: true },
@@ -23,6 +24,8 @@ export default function Navigation() {
   const user: UserProfile | null = useSelector(
     (state: RootState) => state.user.user
   );
+
+  const { token } = useSelector((state: RootState) => state.user);
 
   const handlerLogout = () => {
     dispatch(logoutAsyncUser());
@@ -102,7 +105,7 @@ export default function Navigation() {
                   </div>
                   <div className="md:mr-4 flex-shrink-0 flex items-center">
                     {/* Profile dropdown */}
-                    {user ? (
+                    {user && token !== null ? (
                       <Menu as="div" className="mr-3 relative">
                         <div>
                           <Menu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">

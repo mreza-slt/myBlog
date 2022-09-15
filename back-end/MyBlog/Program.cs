@@ -78,7 +78,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "MyBlog";
     options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.HttpOnly = true;
+    options.Cookie.HttpOnly = false;
     options.SlidingExpiration = true;
     options.LoginPath = "/User/UnAuthorizedLogin";
     options.LogoutPath = "/User/Logout";

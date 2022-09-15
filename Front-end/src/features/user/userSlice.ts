@@ -14,10 +14,17 @@ const initialState: {
   loading: boolean;
 } = {
   token: Cookies.get("MyBlog") || null,
-  user: null,
+  user: JSON.parse(localStorage.getItem("stateUser")!),
   error: null,
   loading: false,
 };
+
+if (initialState.token === null) {
+  localStorage.removeItem("stateUser");
+  initialState.user = null;
+}
+
+console.log(initialState.user);
 
 export const registerAsyncUser: any = createAsyncThunk(
   "User/registerAsyncUser",
@@ -29,6 +36,7 @@ export const registerAsyncUser: any = createAsyncThunk(
         userNameEmailPhone: userData.phoneNumber,
         password: userData.password,
       });
+
       localStorage.setItem("stateUser", JSON.stringify(data));
 
       return { userData: userData, token: Cookies.get("MyBlog") };

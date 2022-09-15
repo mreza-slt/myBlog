@@ -91,6 +91,7 @@ export default function SignupForm(): JSX.Element {
         redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
       }
     });
+    window.location.reload();
   }
   const formik: FormikProps<SignupUser> = useFormik<SignupUser>({
     initialValues,
