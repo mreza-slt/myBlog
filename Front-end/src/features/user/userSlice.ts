@@ -103,7 +103,7 @@ const UserSlice = createSlice({
       };
     });
     builder.addCase(registerAsyncUser.pending, (state) => {
-      return { ...state, user: null, loading: true, error: null };
+      return { ...state, loading: true, error: null };
     });
     builder.addCase(registerAsyncUser.rejected, (state, action) => {
       return {
@@ -124,7 +124,7 @@ const UserSlice = createSlice({
       };
     });
     builder.addCase(editProfileAsyncUser.pending, (state) => {
-      return { ...state, user: null, loading: true, error: null };
+      return { ...state, loading: true, error: null };
     });
     builder.addCase(editProfileAsyncUser.rejected, (state, action) => {
       return {
@@ -146,7 +146,7 @@ const UserSlice = createSlice({
       };
     });
     builder.addCase(loginAsyncUser.pending, (state) => {
-      return { ...state, user: null, loading: true, error: null };
+      return { ...state, loading: true, error: null };
     });
     builder.addCase(loginAsyncUser.rejected, (state, action) => {
       return {

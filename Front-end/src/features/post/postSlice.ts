@@ -43,7 +43,7 @@ const postSlice = createSlice({
       return { ...state, posts: action.payload, loading: false, error: null };
     });
     builder.addCase(getAsyncPosts.pending, (state) => {
-      return { ...state, posts: [], loading: true, error: null };
+      return { ...state, loading: true, error: null };
     });
     builder.addCase(getAsyncPosts.rejected, (state, action) => {
       return {
