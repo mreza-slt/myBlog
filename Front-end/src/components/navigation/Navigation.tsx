@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { UserProfile } from "../../models/interfaces/User";
 import { logoutAsyncUser } from "../../features/user/userSlice";
-import Cookies from "js-cookie";
 
 const navigation = [
   { name: "خانه", href: "#", current: true },

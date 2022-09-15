@@ -24,8 +24,6 @@ if (initialState.token === null) {
   initialState.user = null;
 }
 
-console.log(initialState.user);
-
 export const registerAsyncUser: any = createAsyncThunk(
   "User/registerAsyncUser",
   async (userData: SignupUser, { rejectWithValue }) => {
