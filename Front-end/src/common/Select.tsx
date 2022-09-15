@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Select from "react-select";
-import { Option } from "../interfaces/SelectOption";
-import { SubjectForm } from "../interfaces/Subject";
+import { Option } from "../models/interfaces/SelectOption";
+import { SubjectForm } from "../models/interfaces/Subject";
 
 interface SelectValues {
   formik: any;

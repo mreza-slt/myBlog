@@ -1,17 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import Input from "../common/Input";
+import Input from "../../common/Input";
 import * as Yup from "yup";
-import { useState } from "react";
-import { UserService } from "../services/UserService";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useFormik, FormikProps } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
-import { RegisterUser } from "../interfaces/User";
+import { SignupUser } from "../../models/interfaces/User";
+import { RootState } from "../../features/store";
+import { useDispatch, useSelector } from "react-redux";
+import { registerAsyncUser } from "../../features/user/userSlice";
+import Error from "../../common/Error";
+import Loading from "../../common/Loading";
+import { useQuery } from "../../hooks/useQuery";
+import Button from "../../common/Button";
 
 // 1.managing states
-const initialValues: RegisterUser = {
+const initialValues: SignupUser = {
   title: "",
   name: "",
   surname: "",
@@ -59,32 +64,37 @@ const validationSchema = Yup.object({
     .required("تکرار رمز عبور را وارد کنید"),
 });
 
-export default function Register(): JSX.Element {
-  const [error, setError] = useState<Object | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+export default function SignupForm(): JSX.Element {
+  const { token, error, loading } = useSelector(
+    (state: RootState) => state.user
+  );
+  const dispatch = useDispatch();
+
   const [title, setTitle] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const query = useQuery();
+  const redirect = query.get("redirect") || "/";
 
-  const history = useNavigate();
+  useEffect(() => {
+    if (token) {
+      redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
+    }
+  }, [navigate, redirect, token]);
 
-  async function onSubmit(userData: RegisterUser): Promise<void> {
-    setLoading(true);
-    try {
-      await UserService.Register({
+  async function onSubmit(userData: SignupUser): Promise<void> {
+    await dispatch(
+      registerAsyncUser({
         ...userData,
         title: title ? "خانم" : "آقای",
-      });
-      await UserService.Login({
-        userNameEmailPhone: userData.phoneNumber,
-        password: userData.password,
-      });
-      setError(null);
-      history("/");
-    } catch (err: any) {
-      setError(err.response.data.errors);
-    }
-    setLoading(false);
+      })
+    ).then((res: any) => {
+      if (!res.error) {
+        redirect === "/" ? navigate("/") : navigate(`/${redirect}`);
+      }
+    });
+    window.location.reload();
   }
-  const formik: FormikProps<RegisterUser> = useFormik<RegisterUser>({
+  const formik: FormikProps<SignupUser> = useFormik<SignupUser>({
     initialValues,
     onSubmit,
     validationSchema,
@@ -92,24 +102,24 @@ export default function Register(): JSX.Element {
   });
 
   return (
-    <div className="h-screen flex">
+    <div className="flex">
       <div className="flex flex-col justify-center w-full py-3 px-4 sm:px-6 lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-5xl shadow-3xl px-3 rounded-lg">
           <div>
-            <h2 className="md:mt-6 text-3xl font-extrabold text-gray-900">
+            <h2 className="text-center md:mt-6 text-3xl font-extrabold text-gray-900">
               ایجاد حساب کاربری جدید
             </h2>
             <p className="mt-2 text-sm text-gray-600">
               <Link
-                to="/login"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                to="/user/login"
+                className="font-medium text-violet-600 hover:text-violet-500"
               >
                 ورود
               </Link>
             </p>
           </div>
 
-          <div className="mt-8">
+          <div>
             <div className="my-3">
               <form
                 onSubmit={formik.handleSubmit}
@@ -117,10 +127,10 @@ export default function Register(): JSX.Element {
               >
                 <Input formik={formik} name="userName" lable="نام کاربری" />
                 {/* select title */}
-                <div role="button" className="flex items-center">
+                <div className="flex items-center">
                   <div
                     onClick={() => setTitle(!title)}
-                    className="flex mt-10 border rounded-[3px] p-2 sm:p-[6px]"
+                    className="flex mt-8 sm:mt-10 border rounded-[3px] p-2 sm:p-[6px] cursor-pointer"
                   >
                     <div className="flex flex-col">
                       <FontAwesomeIcon icon={faAngleUp} size="xs" />
@@ -129,17 +139,16 @@ export default function Register(): JSX.Element {
                     <span className="mr-1">{title ? "خانم" : "آقای"}</span>
                   </div>
                   <div className="w-full">
-                    <Input formik={formik} name="name" lable="نام" />
+                    <Input
+                      labelClass="mr-[-3.4rem]"
+                      formik={formik}
+                      name="name"
+                      lable="نام"
+                    />
                   </div>
                 </div>
                 <Input formik={formik} name="email" lable="ایمیل" />
                 <Input formik={formik} name="surname" lable="نام خانوادگی" />
-                <Input
-                  formik={formik}
-                  name="phoneNumber"
-                  lable="شماره موبایل"
-                  type="tel"
-                />
                 <Input
                   formik={formik}
                   name="password"
@@ -152,6 +161,12 @@ export default function Register(): JSX.Element {
                   lable="تکرار رمز عبور"
                   type="password"
                 />
+                <Input
+                  formik={formik}
+                  name="phoneNumber"
+                  lable="شماره موبایل"
+                  type="tel"
+                />
 
                 <div className="flex self-end mb-[1px] justify-between">
                   <div className="flex items-center">
@@ -159,7 +174,7 @@ export default function Register(): JSX.Element {
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300 rounded"
                     />
                     <label
                       htmlFor="remember-me"
@@ -172,54 +187,19 @@ export default function Register(): JSX.Element {
                   <div className="text-sm">
                     <a
                       href="#"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                      className="font-medium text-violet-600 hover:text-violet-500"
                     >
                       رمز عبور خود را فراموش کرده اید؟
                     </a>
                   </div>
                 </div>
 
-                <div>
-                  <button
-                    disabled={!formik.isValid}
-                    type="submit"
-                    className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                      !formik.isValid ? "opacity-50" : ""
-                    }`}
-                  >
-                    ثبت نام
-                    {loading ? (
-                      <div role="status">
-                        <svg
-                          className="inline mr-3 w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill"
-                          />
-                        </svg>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </button>
-                </div>
-                <div className="mt-4">
-                  {error &&
-                    Object.values(error).map((value: string) => (
-                      <div key={value}>
-                        <span className="text-red-600">{value}</span>
-                        <br />
-                      </div>
-                    ))}
-                </div>
+                <Button type="submit" disabled={!formik.isValid}>
+                  ثبت نام
+                  <Loading loading={loading} sizeClass="w-6 h-6" />
+                </Button>
+
+                <Error error={error} />
               </form>
             </div>
           </div>

@@ -33,7 +33,19 @@ namespace MyBlog.Services
             return posts;
         }
 
-        public async Task<ResponseMessageViewModel> Register(PostViewModel postModel, long userId)
+        public PostMiniViewModel Get(long id)
+        {
+            PostMiniViewModel? post = this.FindPost(id);
+
+            if(post == null)
+            {
+                throw new HttpException($"هیچ پستی با شناسه {id} پیدا نشد", nameof(id), HttpStatusCode.NotFound);
+            }
+
+            return post;
+        }
+
+        public async Task<long> Register(PostViewModel postModel, long userId)
         {
             Dictionary<string, string> errors = new();
 
@@ -66,10 +78,9 @@ namespace MyBlog.Services
             }
 
             // Check format and fix size Image
-            string? image;
             try
             {
-                image = this.ImageService.FixImageSize(postModel.Image, 900);
+               this.ImageService.FixImageSize(postModel.Image, 900);
             }
             catch (ArgumentException)
             {
@@ -80,17 +91,22 @@ namespace MyBlog.Services
                 throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Image), HttpStatusCode.BadRequest);
             }
 
-            Post post = new(postModel.Title, postModel.Text, image, userId, childSubjectId.Id);
+            Post post = new(postModel.Title, postModel.Text, postModel.Image, userId, childSubjectId.Id);
             await this.DbContext.AddAsync(post);
             await this.DbContext.SaveChangesAsync();
 
-            return new ResponseMessageViewModel(null, "ثبت پست با موفقیت انجام شد");
+            return post.Id;
         }
 
         // Database Methods
         public PostMiniViewModel[] FindPosts()
         {
             return this.DbContext.Posts.Select(x => new PostMiniViewModel { Id = x.Id, UserName = x.User.Name, Title = x.Title, Text = x.Text, SubjectName = x.Subject.Name, RegisterDateTime = x.RegisterDateTime, NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits, Image = x.Image, UserAvatar = x.User.Avatar }).ToArray();
+        }
+
+        public PostMiniViewModel? FindPost(long id)
+        {
+            return this.DbContext.Posts.Where(x => x.Id == id).Select(x => new PostMiniViewModel { Id = x.Id, UserName = x.User.Name, Title = x.Title, Text = x.Text, SubjectName = x.Subject.Name, RegisterDateTime = x.RegisterDateTime, NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits, Image = x.Image, UserAvatar = x.User.Avatar }).FirstOrDefault();
         }
 
         public bool IsExistTitle(string title)

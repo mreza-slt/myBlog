@@ -3,7 +3,7 @@ export interface LoginUser {
   password: string;
 }
 
-export interface RegisterUser {
+export interface SignupUser {
   title: string;
   name: string;
   surname: string;
@@ -12,4 +12,14 @@ export interface RegisterUser {
   phoneNumber: string;
   password: string;
   passwordConfirm: string;
+}
+
+export interface UserProfile {
+  avatar: string;
+  email: string | null;
+  name: string;
+  phoneNumber: string;
+  surname: string | null;
+  title: string | null;
+  userName: string;
 }

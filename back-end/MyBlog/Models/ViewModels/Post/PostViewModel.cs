@@ -20,7 +20,7 @@ namespace MyBlog.Models.ViewModels.Post
         /// <summary>
         /// پروفایل
         /// </summary>
-        public IFormFile? Image { get; set; }
+        public string? Image { get; set; }
 
         /// <summary>
         ///  شناسه دسته بندی موضوعات
