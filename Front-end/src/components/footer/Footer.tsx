@@ -1,3 +1,6 @@
+import { text } from "stream/consumers";
+import Button from "../../common/Button";
+
 const navigation = {
   solutions: [
     { name: "Marketing", href: "#" },
@@ -136,12 +139,7 @@ export default function Footer() {
                 placeholder="ایمیل خود را وارد کنید"
               />
               <div className="mt-3 rounded-md sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-                <button
-                  type="submit"
-                  className="w-full bg-violet-600 flex items-center justify-center border border-transparent rounded-md py-2 px-4 text-base font-medium text-white hover:bg-violet-700 focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-                >
-                  مشترک شدن
-                </button>
+                <Button>مشترک شدن</Button>
               </div>
             </form>
           </div>

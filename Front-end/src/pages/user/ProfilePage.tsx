@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Button from "../../common/Button";
 import DialogComponent from "../../common/Dialog";
 import EditProfileForm from "../../components/user/EditProfileForm";
 import { RootState } from "../../features/store";
@@ -42,13 +43,8 @@ export default function ProfilePage() {
           <UserInfo label="شماره تلفن" value={user.phoneNumber} />
         </div>
         <div className="pt-5">
-          <div className="flex justify-end">
-            <button
-              onClick={() => setOpen(true)}
-              className="w-full items-center transition-all duration-300 text-violet-700 hover:text-white border border-violet-700 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm py-2.5 text-center mb-2 dark:border-violet-500 dark:text-violet-500 dark:hover:text-white dark:hover:bg-violet-600 dark:focus:ring-violet-900"
-            >
-              ویرایش
-            </button>
+          <div className="flex justify-end" onClick={() => setOpen(true)}>
+            <Button>ویرایش</Button>
           </div>
         </div>
         <DialogComponent setOpen={setOpen} open={open}>

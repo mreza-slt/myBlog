@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { UserProfile } from "../../models/interfaces/User";
 import { logoutAsyncUser } from "../../features/user/userSlice";
+import Button from "../../common/Button";
 
 const navigation = [
   { name: "خانه", href: "#", current: true },
@@ -93,14 +94,8 @@ export default function Navigation() {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <button
-                      onClick={() => setOpen(true)}
-                      type="button"
-                      className="items-center px-2 sm:px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 focus:ring-violet-500"
-                    >
-                      <span>پست جدید</span>
-                    </button>
+                  <div onClick={() => setOpen(true)} className="flex-shrink-0">
+                    <Button>پست جدید</Button>
                   </div>
                   <div className="md:mr-4 flex-shrink-0 flex items-center">
                     {/* Profile dropdown */}

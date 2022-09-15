@@ -14,6 +14,7 @@ import {
 } from "../../features/subject/subjectSlice";
 import Error from "../../common/Error";
 import Loading from "../../common/Loading";
+import Button from "../../common/Button";
 
 // 1.managing states
 const initialValues: SetPostData = {
@@ -48,6 +49,7 @@ export default function RegisterPostForm({ setOpen }: Props) {
 
   const onSubmit = async (postData: SetPostData) => {
     dispatch(registerAsyncPost({ ...postData, image: image }));
+    setOpen(false);
   };
 
   const formik: FormikProps<SetPostData> = useFormik<SetPostData>({
@@ -118,24 +120,17 @@ export default function RegisterPostForm({ setOpen }: Props) {
             />
           </div>
         </div>
-        <button
-          disabled={!formik.isValid}
-          type="submit"
-          className={classNames(
-            { "opacity-70": !formik.isValid },
-            "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-          )}
-        >
-          ثبت
-          <Loading loading={registerLoading} sizeClass="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => setOpen(false)}
-          type="button"
-          className="inline-flex items-center mr-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-        >
-          انصراف
-        </button>
+        <div className="pt-6 flex gap-1 items-center">
+          <div onClick={() => setOpen(false)} className="w-1/2">
+            <Button color="red">انصراف</Button>
+          </div>
+          <div className="w-1/2">
+            <Button type="submit" disabled={!formik.isValid}>
+              <span>ثبت</span>
+              <Loading loading={registerLoading} sizeClass="w-6 h-6" />
+            </Button>
+          </div>
+        </div>
       </form>
 
       <Error error={error} />

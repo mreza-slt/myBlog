@@ -13,6 +13,7 @@ import { registerAsyncUser } from "../../features/user/userSlice";
 import Error from "../../common/Error";
 import Loading from "../../common/Loading";
 import { useQuery } from "../../hooks/useQuery";
+import Button from "../../common/Button";
 
 // 1.managing states
 const initialValues: SignupUser = {
@@ -193,18 +194,10 @@ export default function SignupForm(): JSX.Element {
                   </div>
                 </div>
 
-                <div>
-                  <button
-                    disabled={!formik.isValid}
-                    type="submit"
-                    className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 ${
-                      !formik.isValid ? "opacity-50" : ""
-                    }`}
-                  >
-                    ثبت نام
-                    <Loading loading={loading} sizeClass="w-6 h-6" />
-                  </button>
-                </div>
+                <Button type="submit" disabled={!formik.isValid}>
+                  ثبت نام
+                  <Loading loading={loading} sizeClass="w-6 h-6" />
+                </Button>
 
                 <Error error={error} />
               </form>

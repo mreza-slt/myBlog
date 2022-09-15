@@ -4,6 +4,7 @@ import { FormikProps, useFormik } from "formik";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
+import Button from "../../common/Button";
 import Error from "../../common/Error";
 import Input from "../../common/Input";
 import Loading from "../../common/Loading";
@@ -151,23 +152,14 @@ export default function EditProfileForm({ setOpen, user }: Props) {
           type="tel"
         />
         <div className="pt-6 flex gap-1 items-center">
-          <div className="w-1/2">
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="w-full items-center transition-all duration-300 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-            >
-              انصراف
-            </button>
+          <div className="w-1/2" onClick={() => setOpen(false)}>
+            <Button color="red">انصراف</Button>
           </div>
           <div className="w-1/2">
-            <button
-              type="submit"
-              className="flex justify-center w-full items-center transition-all duration-300 text-violet-700 hover:text-white border border-violet-700 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-violet-500 dark:text-violet-500 dark:hover:text-white dark:hover:bg-violet-600 dark:focus:ring-violet-900"
-            >
+            <Button type="submit" disabled={!formik.isValid}>
               <span>ویرایش</span>
               <Loading loading={loading} sizeClass="w-6 h-6" />
-            </button>
+            </Button>
           </div>
         </div>
       </form>
