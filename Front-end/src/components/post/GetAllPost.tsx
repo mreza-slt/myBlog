@@ -24,7 +24,7 @@ export default function GetAllPost(): JSX.Element {
         ) : (
           <div className="relative max-w-7xl mx-auto">
             {posts && posts.length > 0 ? (
-              <div className="mt-12 max-w-lg mx-auto grid gap-5  xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
+              <div className="mt-12 max-w-lg mx-auto grid gap-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
                 {posts.map((post: GetPostData) => (
                   <Post key={post.id} post={post} />
                 ))}
@@ -53,7 +53,7 @@ function Post({ post }: PostProps): JSX.Element {
         {post.image ? (
           <div className="flex-shrink-0 overflow-hidden">
             <img
-              className="h-48 w-full object-cover hover:scale-125 duration-300"
+              className="h-48 w-full object-fill hover:scale-125 duration-300"
               src={post.image}
               alt=""
             />
@@ -85,7 +85,7 @@ function Post({ post }: PostProps): JSX.Element {
           <div className="flex items-center pb-1 bg-gray-100">
             <div className="flex-shrink-0">
               <img
-                className="w-9 rounded-full px-[3px] py-[2px]"
+                className="w-9 h-9 rounded-full"
                 src={post.userAvatar}
                 alt=""
               />

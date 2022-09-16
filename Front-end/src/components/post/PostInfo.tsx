@@ -29,7 +29,7 @@ export default function PostInfo(): JSX.Element {
             <div className="border-y-[1px] mt-9">
               <div className="sm:my-2 my-1 flex items-center  font-medium text-gray-900">
                 <img
-                  className="ml-3 pull-xs-right h-9 w-9 rounded-full"
+                  className="ml-3 h-9 w-9 rounded-full"
                   src={post.userAvatar}
                   alt=""
                 />
