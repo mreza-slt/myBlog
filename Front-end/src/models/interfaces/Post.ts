@@ -13,14 +13,7 @@ export interface GetPostData {
 export interface SetPostData {
   title: string;
   text: string;
-  subjectId: string;
-  childSubjectId: string;
-}
-
-export interface PostDataForm {
-  title: string;
-  text: string;
-  image: File;
+  image: string;
   subjectId: string;
   childSubjectId: string;
 }

@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import Select from "react-select";
 import { Option } from "../models/interfaces/SelectOption";
@@ -29,9 +30,12 @@ export default function SelectBox({
     <>
       <label
         htmlFor={name}
-        className={` block text-sm font-medium text-gray-700 ${
-          formik.errors[name] && formik.touched[name] ? "text-red-600" : ""
-        }`}
+        className={classNames(
+          "block text-sm font-medium",
+          formik.errors[name] && formik.touched[name]
+            ? "text-red-600"
+            : "text-gray-700"
+        )}
       >
         {formik.errors[name] && formik.touched[name]
           ? formik.errors[name]

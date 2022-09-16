@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { PostService } from "../../services/PostService";
-import { PostDataForm } from "../../models/interfaces/Post";
+import { SetPostData } from "../../models/interfaces/Post";
 
 const initialState = {
   posts: [],
@@ -23,7 +23,7 @@ export const getAsyncPosts: any = createAsyncThunk(
 
 export const registerAsyncPost: any = createAsyncThunk(
   "posts/registerAsyncPost",
-  async (postData: PostDataForm, { rejectWithValue }) => {
+  async (postData: SetPostData, { rejectWithValue }) => {
     try {
       const response = await PostService.Register(postData);
       const { data } = await PostService.Get(response.data);
