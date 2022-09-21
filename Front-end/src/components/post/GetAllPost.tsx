@@ -71,7 +71,7 @@ function Post({ post }: PostProps): JSX.Element {
             <p className="text-sm font-medium text-violet-600">
               <span className="hover:underline">{post.subjectName}</span>
             </p>
-            <h2 className="mt-1 text-[1rem] font-semibold text-gray-900 hover:text-red-600">
+            <h2 className="mt-1 text-[0.9rem] font-semibold text-gray-900 hover:text-red-600">
               {post.title}
             </h2>
             {post.image ? (

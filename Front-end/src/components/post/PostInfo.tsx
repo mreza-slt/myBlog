@@ -23,7 +23,7 @@ export default function PostInfo(): JSX.Element {
           )}
 
           <div className="p-3">
-            <h1 className="mt-6 block font-bold tracking-tight text-gray-800 sm:text-2xl">
+            <h1 className="mt-6 block font-bold tracking-tight text-gray-800 sm:text-xl">
               {post.title}
             </h1>
             <div className="border-y-[1px] mt-9">
@@ -43,7 +43,7 @@ export default function PostInfo(): JSX.Element {
                 <small>بازدید : {post.numberOfVisits}</small>
               </div>
             </div>
-            <p className="mt-8 text-lg text-gray-600 leading-8 text-justify">
+            <p className="mt-8 text-sm text-gray-600 leading-8 text-justify">
               {post.text}
             </p>
           </div>
