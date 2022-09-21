@@ -120,7 +120,7 @@ export default function LoginForm(): JSX.Element {
 
                 <Button type="submit" disabled={!formik.isValid}>
                   ورود
-                  <Loading loading={loading} sizeClass="w-6 h-6" />
+                  <Loading loading={loading} />
                 </Button>
 
                 <Error error={error} />

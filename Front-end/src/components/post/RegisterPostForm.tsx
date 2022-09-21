@@ -151,7 +151,7 @@ export default function RegisterPostForm({ setOpen }: Props) {
           <div className="w-1/2">
             <Button type="submit">
               <span>ثبت</span>
-              <Loading loading={registerLoading} sizeClass="w-6 h-6" />
+              <Loading loading={registerLoading} />
             </Button>
           </div>
         </div>

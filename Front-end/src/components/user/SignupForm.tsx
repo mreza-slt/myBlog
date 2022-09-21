@@ -196,7 +196,7 @@ export default function SignupForm(): JSX.Element {
 
                 <Button type="submit" disabled={!formik.isValid}>
                   ثبت نام
-                  <Loading loading={loading} sizeClass="w-6 h-6" />
+                  <Loading loading={loading} />
                 </Button>
 
                 <Error error={error} />

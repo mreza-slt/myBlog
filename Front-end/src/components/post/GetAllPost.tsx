@@ -30,7 +30,7 @@ export default function GetAllPost(): JSX.Element {
                 ))}
               </div>
             ) : (
-              ""
+              "هنوز هیچ پستی ثبت نشده است"
             )}
           </div>
         )}

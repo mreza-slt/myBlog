@@ -153,7 +153,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
           <div className="w-1/2">
             <Button type="submit" disabled={!formik.isValid}>
               <span>ویرایش</span>
-              <Loading loading={loading} sizeClass="w-6 h-6" />
+              <Loading loading={loading} />
             </Button>
           </div>
         </div>
