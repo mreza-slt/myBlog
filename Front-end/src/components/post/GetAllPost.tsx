@@ -48,7 +48,7 @@ function Post({ post }: PostProps): JSX.Element {
     <Link to={`${post.id}`} state={post}>
       <div
         key={post.id}
-        className="h-80 flex flex-col rounded-lg shadow-lg overflow-hidden cursor-pointer"
+        className="h-80 flex flex-col rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-3xl"
       >
         {post.image ? (
           <div className="flex-shrink-0 overflow-hidden">
@@ -90,7 +90,7 @@ function Post({ post }: PostProps): JSX.Element {
                 alt=""
               />
             </div>
-            <div className="ml-3">
+            <div className="mr-3">
               <h6 className="text-sm font-medium text-gray-900">
                 {post.userName}
               </h6>

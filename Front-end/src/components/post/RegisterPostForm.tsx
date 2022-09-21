@@ -98,35 +98,33 @@ export default function RegisterPostForm({ setOpen }: Props) {
           <Input formik={formik} name="text" lable="متن" />
         </div>
         <div className="flex justify-start items-center">
-          <span className="ml-1 h-24 w-24 overflow-hidden bg-gray-100">
+          <label
+            htmlFor="image"
+            className="ml-1 h-24 w-24 overflow-hidden bg-gray-100 cursor-pointer"
+          >
+            <input
+              id="image"
+              name="image"
+              type="file"
+              className="sr-only"
+              onChange={onChange}
+            />
             <img
               src={image ?? ""}
-              alt="تصویر"
+              alt="انتخاب عکس"
               className="h-full w-full text-gray-300"
             />
-          </span>
-          <div className="flex text-sm  text-gray-600">
+          </label>
+          {!image && formik.touched.image ? (
             <label
               htmlFor="image"
-              className="relative cursor-pointer p-1 rounded-md font-medium text-violet-600 hover:bg-white hover:text-red-500 focus-within:outline-none focus-within:ring-2"
+              className="text-sm text-red-600 cursor-pointer"
             >
-              {!image && formik.touched.image ? (
-                <label className="block text-sm font-medium text-red-600">
-                  عکس را وارد کنید
-                </label>
-              ) : (
-                ""
-              )}
-              <span>انتخاب عکس</span>
-              <input
-                id="image"
-                name="image"
-                type="file"
-                className="sr-only"
-                onChange={onChange}
-              />
+              یک عکس را انتخاب کنید
             </label>
-          </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className="flex gap-1 mt-3">
           <div className="w-1/2">
