@@ -162,6 +162,7 @@ const UserSlice = createSlice({
       return {
         ...state,
         user: null,
+        token: null,
         loading: false,
         error: null,
       };
@@ -169,8 +170,6 @@ const UserSlice = createSlice({
     builder.addCase(logoutAsyncUser.rejected, (state, action) => {
       return {
         ...state,
-        user: null,
-        loading: false,
         error: action.payload.response.data.errors,
       };
     });

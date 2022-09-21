@@ -18,13 +18,13 @@ export default function GetAllPost(): JSX.Element {
 
   return (
     <>
-      <div className="h-full flex items-center justify-center bg-gray-100 pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 sm-pt-16 sm:pb-20 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
         {loading ? (
           <Loading loading={loading} sizeClass="w-12" />
         ) : (
           <div className="relative max-w-7xl mx-auto">
             {posts && posts.length > 0 ? (
-              <div className="mt-12 max-w-lg mx-auto grid gap-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
+              <div className="mt-6 sm:mt-12 max-w-lg mx-auto grid gap-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
                 {posts.map((post: GetPostData) => (
                   <Post key={post.id} post={post} />
                 ))}
