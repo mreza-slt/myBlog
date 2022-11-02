@@ -18,19 +18,19 @@ export default function GetAllPost(): JSX.Element {
 
   return (
     <>
-      <div className="h-full flex items-center justify-center bg-gray-100 pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 sm-pt-16 sm:pb-20 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
         {loading ? (
           <Loading loading={loading} sizeClass="w-12" />
         ) : (
           <div className="relative max-w-7xl mx-auto">
             {posts && posts.length > 0 ? (
-              <div className="mt-12 max-w-lg mx-auto grid gap-5  xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
+              <div className="mt-6 sm:mt-12 max-w-lg mx-auto grid gap-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 md:max-w-none">
                 {posts.map((post: GetPostData) => (
                   <Post key={post.id} post={post} />
                 ))}
               </div>
             ) : (
-              ""
+              "هنوز هیچ پستی ثبت نشده است"
             )}
           </div>
         )}
@@ -48,12 +48,12 @@ function Post({ post }: PostProps): JSX.Element {
     <Link to={`${post.id}`} state={post}>
       <div
         key={post.id}
-        className="h-80 flex flex-col rounded-lg shadow-lg overflow-hidden cursor-pointer"
+        className="h-80 flex flex-col rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-3xl"
       >
         {post.image ? (
           <div className="flex-shrink-0 overflow-hidden">
             <img
-              className="h-48 w-full object-cover hover:scale-125 duration-300"
+              className="h-48 w-full object-fill hover:scale-125 duration-300"
               src={post.image}
               alt=""
             />
@@ -71,7 +71,7 @@ function Post({ post }: PostProps): JSX.Element {
             <p className="text-sm font-medium text-violet-600">
               <span className="hover:underline">{post.subjectName}</span>
             </p>
-            <h2 className="mt-1 text-[1rem] font-semibold text-gray-900 hover:text-red-600">
+            <h2 className="mt-1 text-[0.9rem] font-semibold text-gray-900 hover:text-red-600">
               {post.title}
             </h2>
             {post.image ? (
@@ -85,12 +85,12 @@ function Post({ post }: PostProps): JSX.Element {
           <div className="flex items-center pb-1 bg-gray-100">
             <div className="flex-shrink-0">
               <img
-                className="w-9 rounded-full px-[3px] py-[2px]"
+                className="w-9 h-9 rounded-full"
                 src={post.userAvatar}
                 alt=""
               />
             </div>
-            <div className="ml-3">
+            <div className="mr-3">
               <h6 className="text-sm font-medium text-gray-900">
                 {post.userName}
               </h6>

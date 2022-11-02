@@ -18,7 +18,7 @@ namespace MyBlog.Models.ViewModels.Post
         public string Text { get; set; } = null!;
 
         /// <summary>
-        /// پروفایل
+        /// عکس پست
         /// </summary>
         public string? Image { get; set; }
 

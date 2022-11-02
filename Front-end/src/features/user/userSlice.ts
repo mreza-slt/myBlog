@@ -162,15 +162,17 @@ const UserSlice = createSlice({
       return {
         ...state,
         user: null,
+        token: null,
         loading: false,
         error: null,
       };
     });
+    builder.addCase(logoutAsyncUser.pending, (state) => {
+      return { ...state, loading: true, error: null };
+    });
     builder.addCase(logoutAsyncUser.rejected, (state, action) => {
       return {
         ...state,
-        user: null,
-        loading: false,
         error: action.payload.response.data.errors,
       };
     });

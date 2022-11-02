@@ -42,7 +42,7 @@ export default function DialogComponent({ setOpen, open, children }: Props) {
                   />
                 </button>
               </div>
-              <div className="pt-3 sm:pt-6 px-3">{children}</div>
+              <div className="py-3 sm:py-6 px-3">{children}</div>
             </div>
           </Transition.Child>
         </div>

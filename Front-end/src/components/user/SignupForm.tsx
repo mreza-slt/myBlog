@@ -103,10 +103,10 @@ export default function SignupForm(): JSX.Element {
 
   return (
     <div className="flex">
-      <div className="flex flex-col justify-center w-full py-3 px-4 sm:px-6 lg:px-20 xl:px-24">
+      <div className="flex flex-col justify-center w-full py-3 sm:px-6 lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-5xl shadow-3xl px-3 rounded-lg">
           <div>
-            <h2 className="text-center md:mt-6 text-3xl font-extrabold text-gray-900">
+            <h2 className="text-center mt-3 md:mt-6 text-2xl font-extrabold text-gray-900">
               ایجاد حساب کاربری جدید
             </h2>
             <p className="mt-2 text-sm text-gray-600">
@@ -130,7 +130,7 @@ export default function SignupForm(): JSX.Element {
                 <div className="flex items-center">
                   <div
                     onClick={() => setTitle(!title)}
-                    className="flex mt-8 sm:mt-10 border rounded-[3px] p-2 sm:p-[6px] cursor-pointer"
+                    className="flex bg-white mt-8 sm:mt-10 border rounded-[3px] p-2 sm:p-[6px] cursor-pointer"
                   >
                     <div className="flex flex-col">
                       <FontAwesomeIcon icon={faAngleUp} size="xs" />
@@ -196,7 +196,7 @@ export default function SignupForm(): JSX.Element {
 
                 <Button type="submit" disabled={!formik.isValid}>
                   ثبت نام
-                  <Loading loading={loading} sizeClass="w-6 h-6" />
+                  <Loading loading={loading} />
                 </Button>
 
                 <Error error={error} />

@@ -1,9 +1,9 @@
 type Props = {
   loading: boolean;
-  sizeClass: string;
+  sizeClass?: string;
 };
 
-export default function Loading({ loading, sizeClass }: Props) {
+export default function Loading({ loading, sizeClass = "w-6 h-6" }: Props) {
   return (
     <div>
       {loading ? (

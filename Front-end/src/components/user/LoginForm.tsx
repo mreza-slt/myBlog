@@ -60,7 +60,7 @@ export default function LoginForm(): JSX.Element {
 
   return (
     <div className="bg-zinc-100">
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 h-full">
+      <div className="flex-1 flex flex-col justify-center py-12 sm:px-6 lg:flex-none lg:px-20 h-full">
         <div className="mx-auto w-full max-w-sm lg:w-96 shadow-3xl rounded-md  p-4">
           <div>
             <h1 className="text-2xl text-center font-extrabold">وبلاگ</h1>
@@ -92,7 +92,7 @@ export default function LoginForm(): JSX.Element {
                   type="password"
                 />
 
-                <div className="flex items-center justify-between">
+                <div className="sm:flex sm:items-center sm:justify-between">
                   <div className="flex items-center">
                     <input
                       id="remember-me"
@@ -108,7 +108,7 @@ export default function LoginForm(): JSX.Element {
                     </label>
                   </div>
 
-                  <div className="text-sm">
+                  <div className="text-sm mt-3 sm:mt-0">
                     <a
                       href="#"
                       className="font-medium text-violet-600 hover:text-violet-500"
@@ -120,7 +120,7 @@ export default function LoginForm(): JSX.Element {
 
                 <Button type="submit" disabled={!formik.isValid}>
                   ورود
-                  <Loading loading={loading} sizeClass="w-6 h-6" />
+                  <Loading loading={loading} />
                 </Button>
 
                 <Error error={error} />

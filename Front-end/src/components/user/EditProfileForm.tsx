@@ -97,28 +97,23 @@ export default function EditProfileForm({ setOpen, user }: Props) {
   return (
     <>
       <div className="flex justify-start pt-0 items-center sm:pt-3">
-        <span className="ml-1 h-12 w-12 rounded-full overflow-hidden bg-gray-100">
+        <label
+          htmlFor="avatar"
+          className="ml-1 h-12 w-12 rounded-full overflow-hidden bg-gray-100 cursor-pointer"
+        >
           <img
             src={image ?? user.avatar}
-            alt="تصویر کاربر"
+            alt="انتخاب پروفایل"
             className="h-full w-full text-gray-300"
           />
-        </span>
-        <div className="flex text-sm  text-gray-600">
-          <label
-            htmlFor="file-upload"
-            className="relative cursor-pointer p-1 rounded-md font-medium text-violet-600 hover:bg-white hover:text-red-500 focus-within:outline-none focus-within:ring-2"
-          >
-            <span>انتخاب عکس</span>
-            <input
-              id="file-upload"
-              name="file-upload"
-              type="file"
-              className="sr-only"
-              onChange={onChange}
-            />
-          </label>
-        </div>
+          <input
+            id="avatar"
+            name="avatar"
+            type="file"
+            className="sr-only"
+            onChange={onChange}
+          />
+        </label>
       </div>
       <form onSubmit={formik.handleSubmit}>
         <Input formik={formik} name="userName" lable="نام کاربری" />
@@ -158,7 +153,7 @@ export default function EditProfileForm({ setOpen, user }: Props) {
           <div className="w-1/2">
             <Button type="submit" disabled={!formik.isValid}>
               <span>ویرایش</span>
-              <Loading loading={loading} sizeClass="w-6 h-6" />
+              <Loading loading={loading} />
             </Button>
           </div>
         </div>

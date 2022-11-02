@@ -222,12 +222,8 @@ export default function Navigation() {
             <h1 className="text-center mb-6 block font-bold tracking-tight text-gray-800 sm:text-xl">
               برای ثبت پست جدید ابتدا باید وارد شوید
             </h1>
-            <Link
-              onClick={() => setOpen(false)}
-              to="user/login"
-              className="flex justify-center items-center w-full transition-all duration-300 text-violet-700 hover:text-white border border-violet-700 hover:bg-violet-800 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-violet-500 dark:text-violet-500 dark:hover:text-white dark:hover:bg-violet-600 dark:focus:ring-violet-900"
-            >
-              ورود
+            <Link onClick={() => setOpen(false)} to="user/login">
+              <Button>ورود</Button>
             </Link>
           </>
         )}

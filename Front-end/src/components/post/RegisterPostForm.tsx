@@ -15,10 +15,15 @@ import Error from "../../common/Error";
 import Loading from "../../common/Loading";
 import Button from "../../common/Button";
 
+type Props = {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 // 1.managing states
 const initialValues: SetPostData = {
   title: "",
   text: "",
+  image: "",
   subjectId: "",
   childSubjectId: "",
 };
@@ -31,10 +36,6 @@ const validationSchema = Yup.object({
   childSubjectId: Yup.string().required("موضوع را مشخص کنید"),
 });
 
-type Props = {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
 export default function RegisterPostForm({ setOpen }: Props) {
   const { error, registerLoading } = useSelector(
     (state: RootState) => state.post
@@ -44,13 +45,28 @@ export default function RegisterPostForm({ setOpen }: Props) {
   );
   const dispatch = useDispatch();
 
-  const [image, setImage] = useState<File | null>(null);
-
-  const onSubmit = async (postData: SetPostData) => {
-    dispatch(registerAsyncPost({ ...postData, image: image }));
-    setOpen(false);
+  const [image, setImage] = useState<string>();
+  const onChange = (event: any) => {
+    const file = event.target.files;
+    if (file && file[0]) {
+      // Encode the file using the FileReader API
+      const reader = new FileReader();
+      reader.onloadend = (res) => {
+        setImage(res.target?.result?.toString()!);
+      };
+      reader.readAsDataURL(file[0]);
+    }
   };
 
+  const onSubmit = async (postData: SetPostData) => {
+    dispatch(registerAsyncPost({ ...postData, image: image })).then(
+      (res: any) => {
+        if (!res.error) {
+          setOpen(false);
+        }
+      }
+    );
+  };
   const formik: FormikProps<SetPostData> = useFormik<SetPostData>({
     initialValues,
     onSubmit,
@@ -69,10 +85,6 @@ export default function RegisterPostForm({ setOpen }: Props) {
     }
   }, [dispatch, subjectId]);
 
-  const onChange = (event: any) => {
-    setImage(event.target.files[0]);
-  };
-
   return (
     <>
       <h1 className="text-center block font-bold tracking-tight text-violet-500 sm:text-2xl">
@@ -85,21 +97,34 @@ export default function RegisterPostForm({ setOpen }: Props) {
         <div className="space-y-1">
           <Input formik={formik} name="text" lable="متن" />
         </div>
-        <div className="space-y-1 ">
+        <div className="flex justify-start items-center">
           <label
-            htmlFor={"image"}
-            className="block text-sm font-medium text-gray-700"
+            htmlFor="image"
+            className="ml-1 h-24 w-24 overflow-hidden bg-gray-100 cursor-pointer"
           >
-            تصویر
+            <input
+              id="image"
+              name="image"
+              type="file"
+              className="sr-only"
+              onChange={onChange}
+            />
+            <img
+              src={image ?? ""}
+              alt="انتخاب عکس"
+              className="h-full w-full text-gray-300"
+            />
           </label>
-          <input
-            accept="image/*"
-            id="image"
-            name="image"
-            type="file"
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
-            onChange={onChange}
-          />
+          {!image && formik.touched.image ? (
+            <label
+              htmlFor="image"
+              className="text-sm text-red-600 cursor-pointer"
+            >
+              یک عکس را انتخاب کنید
+            </label>
+          ) : (
+            ""
+          )}
         </div>
         <div className="flex gap-1 mt-3">
           <div className="w-1/2">
@@ -124,9 +149,9 @@ export default function RegisterPostForm({ setOpen }: Props) {
             <Button color="red">انصراف</Button>
           </div>
           <div className="w-1/2">
-            <Button type="submit" disabled={!formik.isValid}>
+            <Button type="submit">
               <span>ثبت</span>
-              <Loading loading={registerLoading} sizeClass="w-6 h-6" />
+              <Loading loading={registerLoading} />
             </Button>
           </div>
         </div>
