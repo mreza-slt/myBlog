@@ -37,12 +37,7 @@ namespace MyBlog.Services
         {
             PostMiniViewModel? post = this.FindPost(id);
 
-            if(post == null)
-            {
-                throw new HttpException($"هیچ پستی با شناسه {id} پیدا نشد", nameof(id), HttpStatusCode.NotFound);
-            }
-
-            return post;
+            return post ?? throw new HttpException($"هیچ پستی با شناسه {id} پیدا نشد", nameof(id), HttpStatusCode.NotFound);
         }
 
         public async Task<long> Register(PostViewModel postModel, long userId)
@@ -80,7 +75,7 @@ namespace MyBlog.Services
             // Check format and fix size Image
             try
             {
-               this.ImageService.FixImageSize(postModel.Image, 900);
+                this.ImageService.FixImageSize(postModel.Image, 900);
             }
             catch (ArgumentException)
             {

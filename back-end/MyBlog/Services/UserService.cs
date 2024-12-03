@@ -234,7 +234,7 @@ namespace MyBlog.Services
 
             await this.signInManager.SignInAsync(user, true);
 
-            return new ProfileUserViewModel() { UserName = user.UserName, Name = user.Name, Surname = user.Surname, Email = user.Email, PhoneNumber = user.PhoneNumber, Title = user.Title, Avatar = user.Avatar };
+            return new ProfileUserViewModel() { UserName = user.UserName, Name = user.Name, Surname = user.Surname, Email = user.Email, PhoneNumber = user.PhoneNumber!, Title = user.Title, Avatar = user.Avatar };
         }
 
         public async Task<ResponseMessageViewModel> Logout()
