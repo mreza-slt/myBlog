@@ -14,17 +14,11 @@ namespace MyBlog.Data.ModelBuilders
             entity.Property(e => e.FullName)
                 .HasMaxLength(552)
                 .HasComputedColumnSql("(ltrim(rtrim((((isnull([Title],'')+' ')+[Name])+' ')+isnull([Surname],''))))", true);
-
             entity.Property(e => e.Name).HasMaxLength(250);
-
             entity.Property(e => e.PhoneNumber).HasColumnType("char(11)");
-
             entity.Property(e => e.PasswordHash).HasColumnType("nvarchar(MAX)");
-
             entity.Property(e => e.RowId).HasDefaultValueSql("(newsequentialid())");
-
             entity.Property(e => e.Surname).HasMaxLength(250);
-
             entity.Property(e => e.Title).HasMaxLength(50);
         }
     }

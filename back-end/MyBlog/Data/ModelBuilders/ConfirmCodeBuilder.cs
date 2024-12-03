@@ -11,11 +11,8 @@ namespace MyBlog.Data.ModelBuilders
 
             entity.HasKey(x => x.Id);
 
-            entity.HasIndex(x => x.RowId)
-             .IsUnique();
-
+            entity.HasIndex(x => x.RowId).IsUnique();
             entity.HasIndex(x => new { x.UserId, x.Code, x.CodeType, });
-
             entity.HasIndex(x => new { x.UserId, x.CodeType, });
 
             entity.Property(e => e.RowId)
