@@ -3,27 +3,19 @@ using MyBlog.Plugins.Extentions;
 
 namespace MyBlog.CustomAttributes
 {
-    // Summary:
-    // یک پیام حاوی متن ارور دریافت میکند
-    // مقدار میتواند خالی باشد. در صورت وارد کردن مقدار تایپ ایمیل چک می شود و اگر تایپ صحیح نباشد متن ارور را نمایش می دهد
-    public class CheckEmailIsEmptyOrFull : ValidationAttribute
+    /// <summary>
+    /// بررسی صحت ایمیل: مقدار می‌تواند خالی باشد.
+    /// در صورت پر بودن مقدار، صحت فرمت ایمیل بررسی شده و در صورت نامعتبر بودن، پیام خطا نمایش داده می‌شود.
+    /// </summary>
+    public class CheckEmailIsEmptyOrFull(string errorMessage) : ValidationAttribute
     {
-        public CheckEmailIsEmptyOrFull(string errorMessage)
-        {
-            this.ErrMessage = errorMessage;
-        }
-
-        private string ErrMessage { get; }
+        private string ErrMessage { get; } = errorMessage;
 
         private string GetErrorMessage() =>
             this.ErrMessage;
 
-#pragma warning disable SA1202 // Elements should be ordered by access
         protected override ValidationResult? IsValid(
-#pragma warning restore SA1202 // Elements should be ordered by access
-#pragma warning disable SA1114 // Parameter list should follow declaration
             object? value, ValidationContext validationContext)
-#pragma warning restore SA1114 // Parameter list should follow declaration
         {
             var emailValue = (string)value!;
 
