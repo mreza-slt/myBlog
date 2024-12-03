@@ -25,9 +25,7 @@ namespace MyBlog.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
 
         public PostMiniViewModel[] GetAll()
-        {
-            return this.PostService.GetAll();
-        }
+          => this.PostService.GetAll();
 
         /// <summary>
         /// دریافت پست
@@ -59,10 +57,9 @@ namespace MyBlog.Controllers
         public async Task<long> Register([FromBody] PostViewModel postModel)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                throw new HttpException("کاربر احراز هویت نشده است.", "", HttpStatusCode.Unauthorized);
-
-            return await this.PostService.Register(postModel, Convert.ToInt64(userId));
+            return userId == null
+                ? throw new HttpException("کاربر احراز هویت نشده است.", "", HttpStatusCode.Unauthorized)
+                : await this.PostService.Register(postModel, Convert.ToInt64(userId));
         }
     }
 }

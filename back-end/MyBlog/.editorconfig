@@ -73,7 +73,7 @@ csharp_prefer_simple_using_statement = true:suggestion
 csharp_prefer_braces = true:silent
 csharp_style_namespace_declarations = block_scoped:silent
 csharp_style_prefer_method_group_conversion = true:silent
-csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_methods = false:none
 csharp_style_expression_bodied_constructors = false:silent
 csharp_style_expression_bodied_operators = false:silent
 csharp_indent_labels = one_less_than_current
@@ -137,3 +137,9 @@ csharp_prefer_system_threading_lock = true:suggestion
 
 # SA1503: Braces should not be omitted
 dotnet_diagnostic.SA1503.severity = none
+
+# IDE0022: Use block body for method
+dotnet_diagnostic.IDE0022.severity = none
+
+# SA1133: Do not combine attributes
+dotnet_diagnostic.SA1133.severity = silent
