@@ -9,8 +9,8 @@ namespace MyBlog.Models.DataModels
     {
         public Subject()
         {
-            this.Posts = new HashSet<Post>();
-            this.Children = new HashSet<Subject>();
+            this.Posts = [];
+            this.Children = [];
         }
 
         public Subject(int code, string fullCode, string name, SubjectType subjectType, long? parentId)
