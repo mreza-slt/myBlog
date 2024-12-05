@@ -4,14 +4,9 @@ using MyBlog.Models.Enums;
 
 namespace MyBlog.Services
 {
-    public class ConfirmCodeService
+    public class ConfirmCodeService(BlogDbContext dbContext)
     {
-        public ConfirmCodeService(BlogDbContext dbContext)
-        {
-            this.DbContext = dbContext;
-        }
-
-        private BlogDbContext DbContext { get; }
+        private BlogDbContext DbContext { get; } = dbContext;
 
         public DateTime? FindLastConfirmCodeCreateDate(long userId, CodeType codeType)
         {
@@ -20,8 +15,6 @@ namespace MyBlog.Services
         }
 
         public ConfirmCode? FindConfirmCode(long? userId, int code, CodeType codeType)
-        {
-            return this.DbContext.ConfirmCodes.FirstOrDefault(x => (userId == null || x.UserId == userId) && x.Code == code && x.CodeType == codeType);
-        }
+            => this.DbContext.ConfirmCodes.FirstOrDefault(x => (userId == null || x.UserId == userId) && x.Code == code && x.CodeType == codeType);
     }
 }
