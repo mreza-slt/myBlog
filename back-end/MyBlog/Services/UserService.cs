@@ -6,6 +6,7 @@ using MyBlog.Models.Enums;
 using MyBlog.Models.ViewModels;
 using MyBlog.Models.ViewModels.User;
 using MyBlog.Plugins.Exceptions;
+using MyBlog.Plugins.Extentions;
 
 namespace MyBlog.Services
 {
@@ -43,8 +44,10 @@ namespace MyBlog.Services
             }
 
             string? email = this.FindEmail(userModel.Email);
+
             if (!string.IsNullOrEmpty(email))
             {
+                email.IsValidEmail();
                 errors.Add(nameof(RegisterUserViewModel.Email), $"ایمیل {email} قبلا برای یک کاربر ثبت شده است");
             }
 
@@ -143,6 +146,7 @@ namespace MyBlog.Services
                 string? email = this.FindEmail(userModel.Email);
                 if (!string.IsNullOrEmpty(email) && email != user.Email)
                 {
+                    email.IsValidEmail();
                     errors.Add(nameof(ProfileUserViewModel.Email), $"ایمیل {email} قبلا برای یک کاربر ثبت شده است");
                 }
             }
@@ -286,6 +290,10 @@ namespace MyBlog.Services
             if (string.IsNullOrEmpty(user.Email))
             {
                 throw new HttpException("شما هنوز ایمیلی ثبت نکرده‌اید. لطفاً یک ایمیل جدید ثبت کنید", "", HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                user.Email.IsValidEmail();
             }
 
             DateTime? lastCodeDate = this.ConfirmCodeService.FindLastConfirmCodeCreateDate(userId, CodeType.EmailConfirm);

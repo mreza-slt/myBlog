@@ -3,7 +3,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using MyBlog.Plugins.Exceptions;
 
 namespace MyBlog.Services
 {
@@ -31,6 +30,6 @@ namespace MyBlog.Services
             await smtp.AuthenticateAsync(userName, password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
-        }
+            }
     }
 }
