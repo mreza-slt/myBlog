@@ -67,7 +67,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ConfirmCodeService>();
-builder.Services.AddScoped<SubjectService>();
+builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<PostService>();
 
 // Add services to the container.

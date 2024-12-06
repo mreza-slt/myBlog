@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
-using MyBlog.Models.Enums.Subject;
+using MyBlog.Models.Enums.Category;
 using MyBlog.Models.ViewModels.Post;
 using MyBlog.Plugins.Exceptions;
 
@@ -10,13 +10,13 @@ namespace MyBlog.Services
     public class PostService(
     BlogDbContext dbContext,
     ImageService imageService,
-    SubjectService subjectService)
+    CategoryService categoryService)
     {
         private BlogDbContext DbContext { get; } = dbContext;
 
         private ImageService ImageService { get; } = imageService;
 
-        private SubjectService SubjectService { get; } = subjectService;
+        private CategoryService CategoryService { get; } = categoryService;
 
         public PostMiniViewModel[] GetAll() => this.FindPosts();
 
@@ -27,16 +27,16 @@ namespace MyBlog.Services
         {
             Dictionary<string, string> errors = [];
 
-            Subject? majorSubject = this.SubjectService.FindSubject(postModel.SubjectId!.Value, SubjectType.MajorSubject);
-            if (majorSubject == null)
+            Category? majorCategory = this.CategoryService.FindCategory(postModel.CategoryId!.Value, CategoryType.MajorCategory);
+            if (majorCategory == null)
             {
-                errors.Add(nameof(PostViewModel.SubjectId), $"هیچ دسته بندی موضوعات با شناسه {postModel.SubjectId} پیدا نشد");
+                errors.Add(nameof(PostViewModel.CategoryId), $"هیچ دسته بندی موضوعات با شناسه {postModel.CategoryId} پیدا نشد");
             }
 
-            Subject? childSubject = this.SubjectService.FindSubject(postModel.ChildSubjectId!.Value, SubjectType.ForumSubject);
-            if (childSubject == null)
+            Category? childCategory = this.CategoryService.FindCategory(postModel.ChildCategoryId!.Value, CategoryType.ForumCategory);
+            if (childCategory == null)
             {
-                errors.Add(nameof(PostViewModel.ChildSubjectId), $"هیچ موضوعی با شناسه {postModel.ChildSubjectId} پیدا نشد");
+                errors.Add(nameof(PostViewModel.ChildCategoryId), $"هیچ موضوعی با شناسه {postModel.ChildCategoryId} پیدا نشد");
             }
 
             if (errors.Count > 0)
@@ -44,9 +44,9 @@ namespace MyBlog.Services
                 throw new HttpException(errors, HttpStatusCode.NotFound);
             }
 
-            if (childSubject!.ParentId != majorSubject!.Id)
+            if (childCategory!.ParentId != majorCategory!.Id)
             {
-                throw new HttpException($"موضوع {childSubject.Name} نمی‌تواند با دسته‌بندی {majorSubject.Name} مرتبط شود", $"{nameof(PostViewModel.SubjectId)}, {nameof(PostViewModel.ChildSubjectId)}", HttpStatusCode.NotAcceptable);
+                throw new HttpException($"موضوع {childCategory.Name} نمی‌تواند با دسته‌بندی {majorCategory.Name} مرتبط شود", $"{nameof(PostViewModel.CategoryId)}, {nameof(PostViewModel.ChildCategoryId)}", HttpStatusCode.NotAcceptable);
             }
 
             bool title = this.IsExistTitle(postModel.Title);
@@ -69,7 +69,7 @@ namespace MyBlog.Services
                 throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Image), HttpStatusCode.BadRequest);
             }
 
-            Post post = new(postModel.Title, postModel.Text, postModel.Image, userId, childSubject.Id);
+            Post post = new(postModel.Title, postModel.Text, postModel.Image, userId, childCategory.Id);
             await this.DbContext.AddAsync(post);
             await this.DbContext.SaveChangesAsync();
 
@@ -84,7 +84,7 @@ namespace MyBlog.Services
                  UserName = x.User.Name,
                  Title = x.Title,
                  Text = x.Text,
-                 SubjectName = x.Subject.Name,
+                 CategoryName = x.Category.Name,
                  RegisterDateTime = x.RegisterDateTime,
                  NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits,
                  Image = x.Image,
@@ -100,7 +100,7 @@ namespace MyBlog.Services
                 UserName = x.User.Name,
                 Title = x.Title,
                 Text = x.Text,
-                SubjectName = x.Subject.Name,
+                CategoryName = x.Category.Name,
                 RegisterDateTime = x.RegisterDateTime,
                 NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits,
                 Image = x.Image,

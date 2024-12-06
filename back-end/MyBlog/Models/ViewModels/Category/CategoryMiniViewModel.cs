@@ -1,11 +1,11 @@
-﻿using MyBlog.Models.Enums.Subject;
+﻿using MyBlog.Models.Enums.Category;
 
-namespace MyBlog.Models.ViewModels.Subject
+namespace MyBlog.Models.ViewModels.Category
 {
     /// <summary>
     /// نمایش موضوعات و دسته بندی ها
     /// </summary>
-    public class SubjectMiniViewModel
+    public class CategoryMiniViewModel
     {
         /// <summary>
         /// شناسه
@@ -30,7 +30,7 @@ namespace MyBlog.Models.ViewModels.Subject
         /// <summary>
         ///  نوع دسته بندی
         /// </summary>
-        public SubjectType SubjectType { get; set; }
+        public CategoryType CategoryType { get; set; }
 
         /// <summary>
         /// شناسه والد

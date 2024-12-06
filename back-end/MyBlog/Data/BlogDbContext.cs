@@ -19,7 +19,7 @@ namespace MyBlog.Data
 
         public virtual DbSet<Post> Posts { get; set; } = null!;
 
-        public virtual DbSet<Subject> Subjects { get; set; } = null!;
+        public virtual DbSet<Category> Categorys { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -39,7 +39,7 @@ namespace MyBlog.Data
 
             modelBuilder.Entity<ConfirmCode>(ModelBuilders.ConfirmCodeBuilder.Build);
             modelBuilder.Entity<Post>(ModelBuilders.PostBuilder.Build);
-            modelBuilder.Entity<Subject>(ModelBuilders.SubjectBuilder.Build);
+            modelBuilder.Entity<Category>(ModelBuilders.CategoryBuilder.Build);
         }
     }
 }

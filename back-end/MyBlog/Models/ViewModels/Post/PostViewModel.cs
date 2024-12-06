@@ -26,12 +26,12 @@ namespace MyBlog.Models.ViewModels.Post
         ///  شناسه دسته بندی موضوعات
         /// </summary>
         [Required(ErrorMessage = "شناسه دسته بندی موضوعات را وارد کنید")]
-        public long? SubjectId { get; set; }
+        public long? CategoryId { get; set; }
 
         /// <summary>
         /// شناسه موضوع
         /// </summary>
         [Required(ErrorMessage = "شناسه موضوع را وارد کنید")]
-        public long? ChildSubjectId { get; set; }
+        public long? ChildCategoryId { get; set; }
     }
 }
