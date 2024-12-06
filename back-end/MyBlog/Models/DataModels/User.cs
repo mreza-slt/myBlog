@@ -7,8 +7,8 @@ namespace MyBlog.Models.DataModels
     {
         public User()
         {
-            this.ConfirmCodes = new HashSet<ConfirmCode>();
-            this.Posts = new HashSet<Post>();
+            this.ConfirmCodes = [];
+            this.Posts = [];
         }
 
         public User(

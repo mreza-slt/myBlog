@@ -73,7 +73,7 @@ csharp_prefer_simple_using_statement = true:suggestion
 csharp_prefer_braces = true:silent
 csharp_style_namespace_declarations = block_scoped:silent
 csharp_style_prefer_method_group_conversion = true:silent
-csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_methods = false:none
 csharp_style_expression_bodied_constructors = false:silent
 csharp_style_expression_bodied_operators = false:silent
 csharp_indent_labels = one_less_than_current
@@ -127,7 +127,22 @@ dotnet_diagnostic.SA1009.severity = none
 dotnet_diagnostic.SA1602.severity = none
 
 # CS8618: Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-dotnet_diagnostic.CS8618.severity = warning
+dotnet_diagnostic.CS8618.severity = none
 
 # SA1515: Single-line comment should be preceded by blank line
 dotnet_diagnostic.SA1515.severity = none
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_prefer_system_threading_lock = true:suggestion
+
+# SA1503: Braces should not be omitted
+dotnet_diagnostic.SA1503.severity = none
+
+# IDE0022: Use block body for method
+dotnet_diagnostic.IDE0022.severity = none
+
+# SA1133: Do not combine attributes
+dotnet_diagnostic.SA1133.severity = silent
+
+# SA1202: Elements should be ordered by access
+dotnet_diagnostic.SA1202.severity = none

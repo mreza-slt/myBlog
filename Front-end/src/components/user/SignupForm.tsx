@@ -58,7 +58,7 @@ const validationSchema = Yup.object({
 
   passwordConfirm: Yup.string()
     .oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("password"), ""],
       "تکرار رمز عبور باید با رمز اصلی یکی باشد"
     )
     .required("تکرار رمز عبور را وارد کنید"),

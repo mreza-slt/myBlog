@@ -2,52 +2,30 @@
 using MyBlog.Data;
 using MyBlog.Models.DataModels;
 using MyBlog.Models.Enums.Subject;
-using MyBlog.Models.ViewModels;
 using MyBlog.Models.ViewModels.Post;
 using MyBlog.Plugins.Exceptions;
 
 namespace MyBlog.Services
 {
-    public class PostService
+    public class PostService(
+    BlogDbContext dbContext,
+    ImageService imageService,
+    SubjectService subjectService)
     {
-        public PostService(
-            BlogDbContext dbContext,
-            ImageService imageService,
-            SubjectService subjectService)
-        {
-            this.DbContext = dbContext;
-            this.ImageService = imageService;
-            this.SubjectService = subjectService;
-        }
+        private BlogDbContext DbContext { get; } = dbContext;
 
-        private BlogDbContext DbContext { get; }
+        private ImageService ImageService { get; } = imageService;
 
-        private ImageService ImageService { get; }
+        private SubjectService SubjectService { get; } = subjectService;
 
-        private SubjectService SubjectService { get; }
+        public PostMiniViewModel[] GetAll() => this.FindPosts();
 
-        public PostMiniViewModel[] GetAll()
-        {
-            PostMiniViewModel[] posts = this.FindPosts();
-
-            return posts;
-        }
-
-        public PostMiniViewModel Get(long id)
-        {
-            PostMiniViewModel? post = this.FindPost(id);
-
-            if(post == null)
-            {
-                throw new HttpException($"هیچ پستی با شناسه {id} پیدا نشد", nameof(id), HttpStatusCode.NotFound);
-            }
-
-            return post;
-        }
+        public PostMiniViewModel Get(long id) =>
+            this.FindPost(id) ?? throw new HttpException($"هیچ پستی با شناسه {id} پیدا نشد", nameof(id), HttpStatusCode.NotFound);
 
         public async Task<long> Register(PostViewModel postModel, long userId)
         {
-            Dictionary<string, string> errors = new();
+            Dictionary<string, string> errors = [];
 
             Subject? majorSubject = this.SubjectService.FindSubject(postModel.SubjectId!.Value, SubjectType.MajorSubject);
             if (majorSubject == null)
@@ -55,8 +33,8 @@ namespace MyBlog.Services
                 errors.Add(nameof(PostViewModel.SubjectId), $"هیچ دسته بندی موضوعات با شناسه {postModel.SubjectId} پیدا نشد");
             }
 
-            Subject? childSubjectId = this.SubjectService.FindSubject(postModel.ChildSubjectId!.Value, SubjectType.ForumSubject);
-            if (childSubjectId == null)
+            Subject? childSubject = this.SubjectService.FindSubject(postModel.ChildSubjectId!.Value, SubjectType.ForumSubject);
+            if (childSubject == null)
             {
                 errors.Add(nameof(PostViewModel.ChildSubjectId), $"هیچ موضوعی با شناسه {postModel.ChildSubjectId} پیدا نشد");
             }
@@ -66,9 +44,9 @@ namespace MyBlog.Services
                 throw new HttpException(errors, HttpStatusCode.NotFound);
             }
 
-            if (childSubjectId!.ParentId != majorSubject!.Id)
+            if (childSubject!.ParentId != majorSubject!.Id)
             {
-                throw new HttpException($"موضوع {childSubjectId.Name} را نمی توانید با دسته بندی موضوع {majorSubject.Name} ثبت کنید", $"{nameof(PostViewModel.SubjectId)}, {nameof(PostViewModel.ChildSubjectId)}", HttpStatusCode.NotAcceptable);
+                throw new HttpException($"موضوع {childSubject.Name} نمی‌تواند با دسته‌بندی {majorSubject.Name} مرتبط شود", $"{nameof(PostViewModel.SubjectId)}, {nameof(PostViewModel.ChildSubjectId)}", HttpStatusCode.NotAcceptable);
             }
 
             bool title = this.IsExistTitle(postModel.Title);
@@ -80,7 +58,7 @@ namespace MyBlog.Services
             // Check format and fix size Image
             try
             {
-               this.ImageService.FixImageSize(postModel.Image, 900);
+                this.ImageService.FixImageSize(postModel.Image, 900);
             }
             catch (ArgumentException)
             {
@@ -91,7 +69,7 @@ namespace MyBlog.Services
                 throw new HttpException("فرمت عکس صحیح نیست", nameof(PostViewModel.Image), HttpStatusCode.BadRequest);
             }
 
-            Post post = new(postModel.Title, postModel.Text, postModel.Image, userId, childSubjectId.Id);
+            Post post = new(postModel.Title, postModel.Text, postModel.Image, userId, childSubject.Id);
             await this.DbContext.AddAsync(post);
             await this.DbContext.SaveChangesAsync();
 
@@ -99,19 +77,38 @@ namespace MyBlog.Services
         }
 
         // Database Methods
-        public PostMiniViewModel[] FindPosts()
-        {
-            return this.DbContext.Posts.Select(x => new PostMiniViewModel { Id = x.Id, UserName = x.User.Name, Title = x.Title, Text = x.Text, SubjectName = x.Subject.Name, RegisterDateTime = x.RegisterDateTime, NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits, Image = x.Image, UserAvatar = x.User.Avatar }).ToArray();
-        }
+        private PostMiniViewModel[] FindPosts() =>
+             [.. this.DbContext.Posts.Select(x => new PostMiniViewModel
+             {
+                 Id = x.Id,
+                 UserName = x.User.Name,
+                 Title = x.Title,
+                 Text = x.Text,
+                 SubjectName = x.Subject.Name,
+                 RegisterDateTime = x.RegisterDateTime,
+                 NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits,
+                 Image = x.Image,
+                 UserAvatar = x.User.Avatar,
+             })];
 
-        public PostMiniViewModel? FindPost(long id)
-        {
-            return this.DbContext.Posts.Where(x => x.Id == id).Select(x => new PostMiniViewModel { Id = x.Id, UserName = x.User.Name, Title = x.Title, Text = x.Text, SubjectName = x.Subject.Name, RegisterDateTime = x.RegisterDateTime, NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits, Image = x.Image, UserAvatar = x.User.Avatar }).FirstOrDefault();
-        }
+        private PostMiniViewModel? FindPost(long id) =>
+             this.DbContext.Posts
+            .Where(x => x.Id == id)
+            .Select(x => new PostMiniViewModel
+            {
+                Id = x.Id,
+                UserName = x.User.Name,
+                Title = x.Title,
+                Text = x.Text,
+                SubjectName = x.Subject.Name,
+                RegisterDateTime = x.RegisterDateTime,
+                NumberOfVisits = x.NumberOfVisits == null ? 0 : x.NumberOfVisits,
+                Image = x.Image,
+                UserAvatar = x.User.Avatar,
+            })
+            .FirstOrDefault();
 
-        public bool IsExistTitle(string title)
-        {
-            return this.DbContext.Posts.Any(x => x.Title == title);
-        }
+        private bool IsExistTitle(string title) =>
+             this.DbContext.Posts.Any(x => x.Title == title);
     }
 }
