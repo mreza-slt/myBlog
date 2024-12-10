@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MyBlog.Data.ModelBuilders
 {
-    public static class SubjectBuilder
+    public static class CategoryBuilder
     {
-        public static void Build(EntityTypeBuilder<Models.DataModels.Subject> entity)
+        public static void Build(EntityTypeBuilder<Models.DataModels.Category> entity)
         {
-            entity.ToTable("Subject");
+            entity.ToTable("Category");
 
             entity.HasKey(x => x.Id);
 

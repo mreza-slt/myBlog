@@ -210,7 +210,7 @@ namespace MyBlog.Services
         private void UpdateUserLoginInfo(User user)
         {
             user.LastLoginDateTime = user.LoginDateTime;
-            user.LoginDateTime = DateTime.Now;
+            user.LoginDateTime = DateTime.UtcNow;
             user.AccessFailedCount = 0; // بازنشانی شمارنده تلاش‌های ناموفق
             user.LockoutEnabled = false; // غیرفعال کردن قفل حساب
         }
@@ -223,7 +223,7 @@ namespace MyBlog.Services
             // اگر شمارنده تلاش‌های ناموفق 4 یا بیشتر باشد، حساب کاربر قفل می‌شود
             if (user.AccessFailedCount >= 4)
             {
-                user.LockoutEnd = DateTime.Now.AddMinutes(5); // تنظیم زمان پایان قفل
+                user.LockoutEnd = DateTime.UtcNow.AddMinutes(5); // تنظیم زمان پایان قفل
                 user.AccessFailedCount = 0; // بازنشانی شمارنده تلاش‌های ناموفق
                 user.LockoutEnabled = true; // فعال کردن قفل حساب
             }
@@ -246,7 +246,7 @@ namespace MyBlog.Services
                     HttpStatusCode.NotFound);
             }
 
-            if (user.LockoutEnd >= DateTime.Now)
+            if (user.LockoutEnd >= DateTime.UtcNow)
             {
                 throw new HttpException("پنج بار تلاش ورود ناموفق. پنج دقیقه دیگر مجددا امتحان کنید", "", HttpStatusCode.Forbidden);
             }
@@ -297,7 +297,7 @@ namespace MyBlog.Services
             }
 
             DateTime? lastCodeDate = this.ConfirmCodeService.FindLastConfirmCodeCreateDate(userId, CodeType.EmailConfirm);
-            if (lastCodeDate != null && DateTime.Now < lastCodeDate.Value.AddMinutes(2))
+            if (lastCodeDate != null && DateTime.UtcNow < lastCodeDate.Value.AddMinutes(2))
             {
                 throw new HttpException("لطفا بعد از دو دقیقه از دریافت کد قبلی مجددا تلاش کنید", "", HttpStatusCode.Forbidden);
             }
@@ -306,7 +306,7 @@ namespace MyBlog.Services
 
             using var transaction = await this.DbContext.Database.BeginTransactionAsync();
 
-            ConfirmCode newConfirmCode = new(userId, randomCode, CodeType.EmailConfirm, DateTime.Now, DateTime.Now.AddHours(1));
+            ConfirmCode newConfirmCode = new(userId, randomCode, CodeType.EmailConfirm, DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
 
             await this.DbContext.AddAsync(newConfirmCode);
 
@@ -327,7 +327,7 @@ namespace MyBlog.Services
         {
             ConfirmCode? confirmCode = this.ConfirmCodeService.FindConfirmCode(userId, receivedCode, CodeType.EmailConfirm);
 
-            if (confirmCode != null && confirmCode.ExpireDate > DateTime.Now)
+            if (confirmCode != null && confirmCode.ExpireDate > DateTime.UtcNow)
             {
                 User user = this.FindUser(userId)!;
 

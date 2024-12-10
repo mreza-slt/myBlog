@@ -21,9 +21,9 @@ namespace MyBlog.Data.ModelBuilders
                 .HasPrincipalKey(d => d.Id)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            entity.HasOne(d => d.Subject)
+            entity.HasOne(d => d.Category)
                 .WithMany(d => d.Posts)
-                .HasForeignKey(d => d.SubjectId)
+                .HasForeignKey(d => d.CategoryId)
                 .HasPrincipalKey(d => d.Id)
                 .OnDelete(DeleteBehavior.NoAction);
         }

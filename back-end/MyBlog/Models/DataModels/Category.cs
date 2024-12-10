@@ -1,31 +1,31 @@
-﻿using MyBlog.Models.Enums.Subject;
+﻿using MyBlog.Models.Enums.Category;
 
 namespace MyBlog.Models.DataModels
 {
     /// <summary>
     /// موضوعات
     /// </summary>
-    public class Subject
+    public class Category
     {
-        public Subject()
+        public Category()
         {
             this.Posts = [];
             this.Children = [];
         }
 
-        public Subject(int code, string fullCode, string name, SubjectType subjectType, long? parentId)
+        public Category(int code, string fullCode, string name, CategoryType categoryType, long? parentId)
        : this()
         {
             this.Code = code;
             this.FullCode = fullCode;
             this.Name = name;
-            this.SubjectType = subjectType;
+            this.CategoryType = categoryType;
             this.ParentId = parentId;
         }
 
-        internal static void Copy(string name, Subject subject)
+        internal static void Copy(string name, Category category)
         {
-            subject.Name = name;
+            category.Name = name;
         }
 
         public long Id { get; set; }
@@ -41,16 +41,16 @@ namespace MyBlog.Models.DataModels
         /// <summary>
         ///  نوع دسته بندی
         /// </summary>
-        public SubjectType SubjectType { get; set; }
+        public CategoryType CategoryType { get; set; }
 
         /// <summary>
         /// شناسه والد
         /// </summary>
         public long? ParentId { get; set; }
 
-        public Subject? Parent { get; set; }
+        public Category? Parent { get; set; }
 
-        public ICollection<Subject> Children { get; set; }
+        public ICollection<Category> Children { get; set; }
 
         public ICollection<Post> Posts { get; set; }
     }

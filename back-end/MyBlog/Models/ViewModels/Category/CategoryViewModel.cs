@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MyBlog.Models.Enums.Subject;
+using MyBlog.Models.Enums.Category;
 
-namespace MyBlog.Models.ViewModels.Subject
+namespace MyBlog.Models.ViewModels.Category
 {
     /// <summary>
     /// اضافه کردن موضوع فقط توسط ادمین وبسایت
     /// </summary>
-    public class SubjectViewModel
+    public class CategoryViewModel
     {
         [Required(ErrorMessage = "نام را وارد کنید")]
         public string Name { get; set; } = null!;
@@ -14,9 +14,9 @@ namespace MyBlog.Models.ViewModels.Subject
         /// <summary>
         ///  نوع دسته بندی
         /// </summary>
-        [EnumDataType(typeof(SubjectType), ErrorMessage = "نوع دسته بندی را انتخاب کنید")]
+        [EnumDataType(typeof(CategoryType), ErrorMessage = "نوع دسته بندی را انتخاب کنید")]
         [Required(ErrorMessage = "مقدار نوع دسته بندی را وارد کنید")]
-        public SubjectType SubjectType { get; set; }
+        public CategoryType CategoryType { get; set; }
 
         /// <summary>
         /// شناسه والد

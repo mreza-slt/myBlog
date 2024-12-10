@@ -48,6 +48,6 @@
         /// <summary>
         ///  نام دسته بندی موضوع
         /// </summary>
-        public string SubjectName { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
     }
 }

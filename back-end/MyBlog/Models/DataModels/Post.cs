@@ -5,7 +5,7 @@ namespace MyBlog.Models.DataModels
     /// <summary>
     /// پست
     /// </summary>
-    public class Post(string title, string text, string? image, long userId, long subjectId)
+    public class Post(string title, string text, string? image, long userId, long categoryId)
     {
         public long Id { get; set; }
 
@@ -30,7 +30,7 @@ namespace MyBlog.Models.DataModels
         /// <summary>
         /// تاریخ ثبت
         /// </summary>
-        public DateTime? RegisterDateTime { get; set; } = DateTime.Now;
+        public DateTime? RegisterDateTime { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// تعداد بازدید
@@ -45,10 +45,12 @@ namespace MyBlog.Models.DataModels
         /// <summary>
         /// شناسه موضوع اصلی
         /// </summary>
-        public long SubjectId { get; set; } = subjectId;
+        public long CategoryId { get; set; } = categoryId;
 
         public User User { get; set; } = null!;
 
-        public Subject Subject { get; set; } = null!;
+        public Category Category { get; set; } = null!;
+
+        public ICollection<Comment> Comments { get; set; } = [];
     }
 }
