@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MyBlog.Data.ModelBuilders;
 using MyBlog.Models.DataModels;
 
 namespace MyBlog.Data
@@ -21,6 +22,14 @@ namespace MyBlog.Data
 
         public virtual DbSet<Category> Categorys { get; set; } = null!;
 
+        public virtual DbSet<Like> Likes { get; set; } = null!;
+
+        public virtual DbSet<Comment> Comments { get; set; } = null!;
+
+        public virtual DbSet<Question> Questions { get; set; } = null!;
+
+        public virtual DbSet<Answer> Answers { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
@@ -29,17 +38,21 @@ namespace MyBlog.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(ModelBuilders.UserBuilder.Build);
-            modelBuilder.Entity<UserClaim>(ModelBuilders.UserClaimBuilder.Build);
-            modelBuilder.Entity<UserRole>(ModelBuilders.UserRoleBuilder.Build);
-            modelBuilder.Entity<UserLogin>(ModelBuilders.UserLoginBuilder.Build);
-            modelBuilder.Entity<Role>(ModelBuilders.RoleBuilder.Build);
-            modelBuilder.Entity<RoleClaim>(ModelBuilders.RoleClaimBuilder.Build);
-            modelBuilder.Entity<UserToken>(ModelBuilders.UserTokenBuilder.Build);
+            modelBuilder.Entity<User>(UserBuilder.Build);
+            modelBuilder.Entity<UserClaim>(UserClaimBuilder.Build);
+            modelBuilder.Entity<UserRole>(UserRoleBuilder.Build);
+            modelBuilder.Entity<UserLogin>(UserLoginBuilder.Build);
+            modelBuilder.Entity<Role>(RoleBuilder.Build);
+            modelBuilder.Entity<RoleClaim>(RoleClaimBuilder.Build);
+            modelBuilder.Entity<UserToken>(UserTokenBuilder.Build);
 
-            modelBuilder.Entity<ConfirmCode>(ModelBuilders.ConfirmCodeBuilder.Build);
-            modelBuilder.Entity<Post>(ModelBuilders.PostBuilder.Build);
-            modelBuilder.Entity<Category>(ModelBuilders.CategoryBuilder.Build);
+            modelBuilder.Entity<ConfirmCode>(ConfirmCodeBuilder.Build);
+            modelBuilder.Entity<Post>(PostBuilder.Build);
+            modelBuilder.Entity<Category>(CategoryBuilder.Build);
+            modelBuilder.Entity<Like>(LikeBuilder.Build);
+            modelBuilder.Entity<Comment>(CommentBuilder.Build);
+            modelBuilder.Entity<Question>(QuestionBuilder.Build);
+            modelBuilder.Entity<Answer>(AnswerBuilder.Build);
         }
     }
 }

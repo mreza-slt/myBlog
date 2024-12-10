@@ -30,7 +30,7 @@ namespace MyBlog.Models.DataModels
         /// <summary>
         /// تاریخ ثبت
         /// </summary>
-        public DateTime? RegisterDateTime { get; set; } = DateTime.Now;
+        public DateTime? RegisterDateTime { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// تعداد بازدید
@@ -50,5 +50,7 @@ namespace MyBlog.Models.DataModels
         public User User { get; set; } = null!;
 
         public Category Category { get; set; } = null!;
+
+        public ICollection<Comment> Comments { get; set; } = [];
     }
 }
